@@ -1,628 +1,27 @@
 <!DOCTYPE html>
-<html lang="vi" class="antialiased selection:bg-amber-500/20 selection:text-amber-600" data-theme="kindle" style="--reader-font: &quot;Merriweather&quot;, Georgia, serif; --reader-size: 19px; --reader-line-height: 1.75; --reader-align: justify; --reader-padding: 20px;"><head><script data-bard-client-injected="true">(function(firebaseConfig, initialAuthToken, appId) {
-        window.__firebase_config = firebaseConfig;
-        window.__initial_auth_token = initialAuthToken;
-        window.__app_id = appId;
-            })("\n{\n  \"apiKey\": \"AIzaSyCqyCcs2R2e7AegGjvFAwG98wlamtbHvZY\",\n  \"authDomain\": \"bard-frontend.firebaseapp.com\",\n  \"projectId\": \"bard-frontend\",\n  \"storageBucket\": \"bard-frontend.firebasestorage.app\",\n  \"messagingSenderId\": \"175205271074\",\n  \"appId\": \"1:175205271074:web:2b7bd4d34d33bf38e6ec7b\"\n}\n","eyJhbGciOiJSUzI1NiIsImtpZCI6IjExNjRiNzdiNDMzZDdhMDAyMWI4NjE4YjhjYTU3ZTMyZGI5MWUxMTMiLCJ0eXAiOiJKV1QifQ.eyJzdWIiOiJmaXJlYmFzZS1hZG1pbnNkay1mYnN2Y0BiYXJkLWZyb250ZW5kLmlhbS5nc2VydmljZWFjY291bnQuY29tIiwiYXVkIjoiaHR0cHM6Ly9pZGVudGl0eXRvb2xraXQuZ29vZ2xlYXBpcy5jb20vZ29vZ2xlLmlkZW50aXR5LmlkZW50aXR5dG9vbGtpdC52MS5JZGVudGl0eVRvb2xraXQiLCJ1aWQiOiIwMzYxMTIyOTkxOTUwMDUzNTc2NCIsImlzcyI6ImZpcmViYXNlLWFkbWluc2RrLWZic3ZjQGJhcmQtZnJvbnRlbmQuaWFtLmdzZXJ2aWNlYWNjb3VudC5jb20iLCJjbGFpbXMiOnsiYXBwSWQiOiJjXzQxYzMzZWJhYzU3ZWY4MjJfaW5kZXguaHRtbC05NDEifSwiZXhwIjoxNzkyOTEwNjczLCJpYXQiOjE3OTI5MDcwNzMsImFsZyI6IlJTMjU2In0.gKXnA0wYcpNgnsmAInoBBt3_MVo6Vw0p9gbMf5lrAwgudBtmqrQnMRRHK-soz34PFwPuLvTMAXeXer5P9EbBNXOrT7s-kRQRyZcXvE2bpcmtx2PctrfxoD77bDc2N3Nrpmv2jp4EVvLlAUJmVaS0_9PBGHr3HBJ01vaVSY4OKQxfWDvO9Ze8Str0SHH3D2Hpl62K5R8Saqulj5_mGMk0-JR9o2KcSocIyVdK5o06PkbhV0ixfbHBift2MmiSnuVG_KNjt0Wwt05qZkIPYswuz4t9raqGYw__SXShfqEBLLeEaPi_DDv9y4rVjOwwfEORBGhci-6lUtSy94exRJQQ4w","c_41c33ebac57ef822_index.html-941")</script><script data-bard-client-injected="true">
-  document.addEventListener('input', (event) => {
-    if (event.target && (event.target.isContentEditable || event.target.hasAttribute('contenteditable'))) {
-      const clonedDoc = document.cloneNode(true);
-      const injectedScripts = clonedDoc.querySelectorAll('[data-bard-client-injected="true"]');
-      injectedScripts.forEach(el => el.remove());
-      window.parent.postMessage({
-        type: 'inlineEdit',
-        html: '<!DOCTYPE html>\n' + clonedDoc.documentElement.outerHTML
-      }, '*');
-    }
-  });
-</script><script data-bard-client-injected="true">(function(){'use strict';window.addEventListener("message",a=>{a.data&&a.data.type==="SUPPLEMENTAL_DATA_UPDATE"&&window.dispatchEvent(new CustomEvent("supplementaldataupdate",{detail:a.data.data}))});}).call(this);
-</script><script data-bard-client-injected="true">(function() {
-  const SCROLL_KEYS = new Set([
-    'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight',
-    ' ', 'Spacebar', 'PageUp', 'PageDown', 'Home', 'End',
-  ]);
-  const HORIZONTAL_KEYS = new Set(['ArrowLeft', 'ArrowRight']);
-
-  function isTextEntryTarget(target) {
-    if (!target) return false;
-    const tagName = target.tagName;
-    return tagName === 'INPUT' || tagName === 'TEXTAREA' ||
-        tagName === 'SELECT' || target.isContentEditable === true;
-  }
-
-  // An element absorbs the key only if it both overflows on the axis being
-  // scrolled and is configured to scroll on that axis. The cheap dimension
-  // test runs first because getComputedStyle forces a style recalc, and this
-  // runs on every keypress. Each axis is read from its own longhand: the
-  // 'overflow' shorthand serializes as two values when the axes differ, which
-  // is the common 'overflow-x: hidden; overflow-y: auto' pane.
-  function canScroll(node, horizontal) {
-    const overflows = horizontal ? node.scrollWidth > node.clientWidth
-                                 : node.scrollHeight > node.clientHeight;
-    if (!overflows) return false;
-    const style = window.getComputedStyle(node);
-    const overflow = horizontal ? style.overflowX : style.overflowY;
-    return overflow === 'auto' || overflow === 'scroll';
-  }
-
-  // Walks up from the event target so nested scrollers keep their behavior.
-  // <body> is included because pages that pin the root height make it the
-  // scroll container.
-  function hasScrollableAncestor(target, horizontal) {
-    let node = target;
-    while (node && node !== document.documentElement) {
-      if (canScroll(node, horizontal)) return true;
-      node = node.parentElement;
-    }
-    return false;
-  }
-
-  function rootCanScroll(horizontal) {
-    const scroller = document.scrollingElement || document.documentElement;
-    if (!scroller) return false;
-    // Tolerate a pixel of rounding so subpixel layouts do not look scrollable.
-    return horizontal ? scroller.scrollWidth > window.innerWidth + 1
-                      : scroller.scrollHeight > window.innerHeight + 1;
-  }
-
-  window.addEventListener('keydown', function(event) {
-    if (!SCROLL_KEYS.has(event.key)) return;
-    if (event.defaultPrevented) return;
-    // Alt and Meta turn arrows into browser history navigation, and Ctrl is
-    // reserved for shortcuts, so none of them are scroll intent.
-    if (event.altKey || event.metaKey || event.ctrlKey) return;
-
-    const target = event.target;
-    if (isTextEntryTarget(target)) return;
-
-    // Anything that can still absorb the scroll gets to keep it.
-    const horizontal = HORIZONTAL_KEYS.has(event.key);
-    if (rootCanScroll(horizontal)) return;
-    if (hasScrollableAncestor(target, horizontal)) return;
-
-    event.preventDefault();
-  }, {capture: true, passive: false});
-})();</script><script data-bard-client-injected="true">(function() {
-  // Ensure this script is executed only once
-  if (window.firebaseAuthBridgeScriptLoaded) {
-    return;
-  }
-  window.firebaseAuthBridgeScriptLoaded = true;
-
-  let nextTokenPromiseId = 0;
-
-  // Stores { resolve, reject } for ongoing token requests
-  const pendingTokenPromises = {};
-
-  // Listen for messages from the Host Application
-  window.addEventListener('message', function(event) {
-
-    const messageData = event.data;
-
-  if (messageData && messageData.type === 'RESOLVE_NEW_FIREBASE_TOKEN') {
-      const { success, token, error, promiseId } = messageData ?? {};
-      if (pendingTokenPromises[promiseId]) {
-        if (success) {
-          pendingTokenPromises[promiseId].resolve(token);
-        } else {
-          pendingTokenPromises[promiseId].reject(new Error(error || 'Token refresh failed from host.'));
-        }
-        delete pendingTokenPromises[promiseId];
-      }
-    }
-  });
-
-  // Expose a function for the Generated App to request a new Firebase token
-  window.requestNewFirebaseToken = function() {
-    const currentPromiseId = nextTokenPromiseId++;
-    const promise = new Promise((resolve, reject) => {
-      pendingTokenPromises[currentPromiseId] = { resolve, reject };
-    });
-    if (window.parent && window.parent !== window) {
-      window.parent.postMessage({
-        type: 'REQUEST_NEW_FIREBASE_TOKEN',
-        promiseId: currentPromiseId
-      }, '*');
-    } else {
-      pendingTokenPromises[currentPromiseId].reject(new Error('No parent window to request token from.'));
-      delete pendingTokenPromises[currentPromiseId];
-    }
-    return promise;
-  };
-})();</script><script data-bard-client-injected="true">
-let realOriginalGetUserMedia = null;
-if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-  realOriginalGetUserMedia = navigator.mediaDevices.getUserMedia.bind(navigator.mediaDevices);
-}
-
-(function() {
-  if (navigator.mediaDevices && navigator.mediaDevices.__proto__) {
-    try {
-      Object.defineProperty(navigator.mediaDevices.__proto__, 'getUserMedia', {
-        get: function() {
-          return undefined; // Or throw an error
-        },
-        configurable: false
-      });
-    } catch (error) {
-      console.error("Error defining prototype getter:", error);
-    }
-  }
-})();
-
-(function() {
-  const pendingMediaResolvers = {};
-  let nextMediaPromiseId = 0;
-
-  function requestMediaPermissions(constraints) {
-    const mediaPromiseId = nextMediaPromiseId++;
-    const promise = new Promise((resolve, reject) => {
-      pendingMediaResolvers[mediaPromiseId] = (granted) => {
-        delete pendingMediaResolvers[mediaPromiseId];
-        resolve(granted);
-      };
-    });
-
-    window.parent.postMessage({
-      type: 'requestMediaPermission',
-      constraints: constraints,
-      promiseId: mediaPromiseId,
-    }, '*');
-
-    return promise;
-  }
-
-  let originalGetUserMedia = realOriginalGetUserMedia;
-
-  function interceptGetUserMedia() {
-    if (navigator.mediaDevices) {
-      Object.defineProperty(navigator.mediaDevices, 'getUserMedia', {
-        value: function(constraints) {
-          return requestMediaPermissions(constraints).then((granted) => {
-            if (granted) {
-              if (originalGetUserMedia) {
-                return originalGetUserMedia(constraints);
-              } else {
-                throw new Error("Original getUserMedia not available.");
-              }
-            } else {
-              throw new DOMException('Permission denied', 'NotAllowedError');
-            }
-          });
-        },
-        writable: false,
-        configurable: false
-      });
-    }
-  }
-
-  interceptGetUserMedia();
-
-  const observer = new MutationObserver(function(mutationsList, observer) {
-    for (const mutation of mutationsList) {
-      if (mutation.type === 'reconfigured' && mutation.name === 'getUserMedia' && mutation.object === navigator.mediaDevices) {
-        interceptGetUserMedia();
-      } else if (mutation.type === 'attributes' && mutation.attributeName === 'getUserMedia' && mutation.target === navigator.mediaDevices) {
-        interceptGetUserMedia();
-      } else if (mutation.type === 'childList' && mutation.addedNodes) {
-        mutation.addedNodes.forEach(node => {
-          if (node === navigator.mediaDevices) {
-            interceptGetUserMedia();
-          }
-        });
-      }
-    }
-  });
-
-  function interceptSpeechRecognition() {
-    if (!window.SpeechRecognition && !window.webkitSpeechRecognition) {
-      return;
-    }
-
-    const OriginalSpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-
-    const SpeechRecognitionWrapper = function(...args) {
-      const recognizer = new OriginalSpeechRecognition(...args);
-      const originalStart = recognizer.start.bind(recognizer);
-
-      recognizer.start = function() {
-        requestMediaPermissions({ audio: true }).then(granted => {
-          if (granted) {
-            originalStart();
-          } else {
-            const errorEvent = new SpeechRecognitionErrorEvent('error');
-            errorEvent.error = 'not-allowed'; // This is the standard error for permission denial.
-            recognizer.dispatchEvent(errorEvent);
-          }
-        });
-      };
-
-      return recognizer;
-    };
-
-    SpeechRecognitionWrapper.prototype = OriginalSpeechRecognition.prototype;
-    SpeechRecognitionWrapper.prototype.constructor = SpeechRecognitionWrapper;
-
-    if (window.SpeechRecognition) {
-      window.SpeechRecognition = SpeechRecognitionWrapper;
-    }
-    if (window.webkitSpeechRecognition) {
-      window.webkitSpeechRecognition = SpeechRecognitionWrapper;
-    }
-  }
-
-  interceptSpeechRecognition();
-
-  window.addEventListener('message', function(event) {
-    if (event.data) {
-      if (event.data.type === 'resolveMediaPermission') {
-        const { promiseId, granted } = event.data;
-        if (pendingMediaResolvers[promiseId]) {
-          pendingMediaResolvers[promiseId](granted);
-        }
-      }
-    }
-  });
-
-})();</script><script ws-interception-config="{&quot;parentOrigin&quot;:&quot;https://gemini.google.com&quot;,&quot;proxiedDomains&quot;:[]}" data-bard-client-injected="true">(function(){'use strict';var u=typeof Object.defineProperties=="function"?Object.defineProperty:function(b,d,e){if(b==Array.prototype||b==Object.prototype)return b;b[d]=e.value;return b};function v(b){b=["object"==typeof globalThis&&globalThis,b,"object"==typeof window&&window,"object"==typeof self&&self,"object"==typeof global&&global];for(var d=0;d<b.length;++d){var e=b[d];if(e&&e.Math==Math)return e}throw Error("Cannot find global object");}var w=v(this);
-function y(b,d){if(d)a:{var e=w;b=b.split(".");for(var h=0;h<b.length-1;h++){var k=b[h];if(!(k in e))break a;e=e[k]}b=b[b.length-1];h=e[b];d=d(h);d!=h&&d!=null&&u(e,b,{configurable:!0,writable:!0,value:d})}}function z(b){function d(h){return b.next(h)}function e(h){return b.throw(h)}return new Promise(function(h,k){function m(n){n.done?h(n.value):Promise.resolve(n.value).then(d,e).then(m,k)}m(b.next())})}y("globalThis",function(b){return b||w});/*
-
- Copyright The Closure Library Authors.
- SPDX-License-Identifier: Apache-2.0
-*/
-function A(b,d){function e(){}e.prototype=d.prototype;b.j=d.prototype;b.prototype=new e;b.prototype.constructor=b;b.h=function(h,k,m){for(var n=Array(arguments.length-2),p=2;p<arguments.length;p++)n[p-2]=arguments[p];return d.prototype[k].apply(h,n)}};function B(b,d,e="*"){function h(a){if(typeof a==="string")return F.encode(a).buffer;if(a instanceof ArrayBuffer)return a.slice(0);if(ArrayBuffer.isView(a))return a.buffer.slice(a.byteOffset,a.byteOffset+a.byteLength);throw Error("Invalid data type");}function k(a){a=h(a);var f={type:"send",data:new Uint8Array(a)},g;(g=r)==null||g.postMessage(f,[a])}function m(){if(!r)throw Error("Data port not captured yet.");r.onmessage=a=>{if(a.data.type==="message"){a=new MessageEvent("message",{data:G.decode(a.data.data)});
-let f;(f=c.onmessage)==null||f.call(c,a);c.dispatchEvent(a)}}}function n(){if(!t)throw Error("Control port not captured yet.");t.onmessage=a=>{switch(a.data.type){case "open":l=1;var f=new Event("open"),g;(g=c.onopen)==null||g.call(c,f);c.dispatchEvent(f);q.forEach(H=>{k(H)});q=[];break;case "close":g=a.data;l=3;g=new CloseEvent("close",{code:g.code,reason:g.reason,wasClean:g.wasClean});(f=c.onclose)==null||f.call(c,g);c.dispatchEvent(g);break;case "error":l=3;f=new Event("error");let x;(x=c.onerror)==
-null||x.call(c,f);c.dispatchEvent(f)}}}function p(a){return z(function*(){var f=new MessageChannel;t=f.port1;var g=new MessageChannel;r=g.port1;n();m();window.parent.postMessage({type:"websocket_open",portOrdering:["control","data"],url:b,protocols:a||[],connectionId:I},e,[f.port2,g.port2])}())}var c=Reflect.construct(EventTarget,[],new.target);c.CONNECTING=0;c.OPEN=1;c.CLOSING=2;c.CLOSED=3;c.url=b;c.binaryType="arraybuffer";c.protocol="";c.i="";var l=0,t=null,r=null,q=[],F=new TextEncoder,G=new TextDecoder;
-c.onopen=null;c.onmessage=null;c.onclose=null;c.onerror=null;Object.defineProperty(c,"readyState",{get:()=>l,enumerable:!0,configurable:!0});Object.defineProperty(c,"bufferedAmount",{get:()=>{var a=0;q.forEach(f=>{a+=typeof f==="string"?f.length:f.byteLength});return a},enumerable:!0,configurable:!0});var I=function(){var a;return((a=globalThis.crypto)==null?0:a.randomUUID)?globalThis.crypto.randomUUID():"xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g,f=>{var g=Math.random()*16|0;return(f===
-"x"?g:g&3|8).toString(16)})}();c.send=a=>{if(l===1)a instanceof Blob?a.arrayBuffer().then(f=>{k(f)}):k(a);else if(l===0)if(typeof a==="string")q.push(a);else if(a instanceof ArrayBuffer||ArrayBuffer.isView(a))q.push(h(a));else throw Error("Sending Blob is not supported before the connection is open.");else console.debug("WebSocket send called in CLOSING or CLOSED state; ignored.")};c.close=(a=1E3,f="")=>{if(l!==2&&l!==3){l=2;a={type:"close",code:a,reason:f,wasClean:a===1E3};var g;(g=t)==null||g.postMessage(a)}};
-Promise.resolve().then(()=>p(d));return c}A(B,EventTarget);var C=document.currentScript,D=C==null?void 0:C.getAttribute("ws-interception-config");if(!D)throw Error("WebSocket Interceptor: Missing ws-interception-config attribute in the script tag.");var E=JSON.parse(D);if(!E.parentOrigin||typeof E.parentOrigin!=="string")throw Error("WebSocket Interceptor: Invalid parentOrigin in ws-interception-config");
-(function(b){var d=Object.getOwnPropertyDescriptor(window,"WebSocket");if(!d||d.writable||d.configurable)d=Object.assign(function(e,h){try{let k=(new URL(e)).hostname;if(b.proxiedDomains.some(m=>k===m||k.endsWith(`.${m}`)))return new B(e,h,b.parentOrigin)}catch(k){throw window.parent.postMessage({type:"websocket_blocked",url:e,reason:"blocked_invalid_url"},b.parentOrigin),new DOMException(`WebSocket connection to '${e}' is not allowed in Canvas.`,"SecurityError");}window.parent.postMessage({type:"websocket_blocked",
-url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMException(`WebSocket connection to '${e}' is not allowed in Canvas.`,"SecurityError");},{CONNECTING:0,OPEN:1,CLOSING:2,CLOSED:3}),Object.defineProperty(window,"WebSocket",{value:d,writable:!1,configurable:!1})})({proxiedDomains:E.proxiedDomains||[],parentOrigin:E.parentOrigin});}).call(this);
-</script><script data-bard-client-injected="true">((function(modelInformation) {
-  const originalFetch = window.fetch;
-  // TODO: b/421908508 - Move these out of the script and match all generative AI model calls.
-  let googleLlmBaseApiUrls = [
-    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.textModelName + ':streamGenerateContent',
-    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.textModelName + ':generateContent',
-    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.imageModelName + ':predict',
-    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.imageModelName + ':predictLongRunning',
-    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.imageEditModelName + ':generateContent',
-    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.imageTransformModelName + ':generateContent',
-    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.videoModelName + ':predict',
-    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.videoModelName + ':predictLongRunning',
-    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.ttsModelName + ':generateContent',
-  ];
-  modelInformation.deprecatedTextModelNames.forEach((modelName) => {
-    googleLlmBaseApiUrls.push(
-      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':streamGenerateContent',
-      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':generateContent',
-    );
-  });
-  modelInformation.deprecatedImageModelNames.forEach((modelName) => {
-    googleLlmBaseApiUrls.push(
-      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':predict',
-      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':predictLongRunning',
-      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':generateContent',
-      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':streamGenerateContent',
-    );
-  });
-  modelInformation.deprecatedGenerateImageModelNames.forEach((modelName) => {
-    googleLlmBaseApiUrls.push(
-      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':generateContent',
-      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':streamGenerateContent',
-    );
-  });
-  modelInformation.deprecatedImageTransformModelNames.forEach((modelName) => {
-    googleLlmBaseApiUrls.push(
-      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':generateContent',
-      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':streamGenerateContent',
-    );
-  });
-
-  const pendingFetchResolvers = {};
-  let nextPromiseId = 0;
-
-  function handleStringInput(input, optionsArgument) {
-    const actualUrl = input;
-    const fetchCallArgs = [actualUrl, optionsArgument];
-    const effectiveOptions = optionsArgument || {};
-    const bodyForApiKeyCheck = effectiveOptions.body;
-    const bodyForPostMessage = effectiveOptions.body;
-    return { actualUrl, fetchCallArgs, effectiveOptions, bodyForApiKeyCheck, bodyForPostMessage };
-  }
-
-  function handleRequestInput(input, optionsArgument) {
-    const actualUrl = input.url;
-    const fetchCallArgs = [input, optionsArgument];
-    const effectiveOptions = { method: input.method, headers: new Headers(input.headers) };
-    let bodyForApiKeyCheck;
-    let bodyForPostMessage;
-
-    if (optionsArgument) {
-      if (optionsArgument.method) effectiveOptions.method = optionsArgument.method;
-      if (optionsArgument.headers) effectiveOptions.headers = new Headers(optionsArgument.headers);
-      if ('body' in optionsArgument) {
-        bodyForApiKeyCheck = optionsArgument.body;
-        bodyForPostMessage = optionsArgument.body;
-      } else {
-        bodyForApiKeyCheck = undefined;
-        bodyForPostMessage = input.body;
-      }
-    } else {
-      bodyForApiKeyCheck = undefined;
-      bodyForPostMessage = input.body;
-    }
-    return { actualUrl, fetchCallArgs, effectiveOptions, bodyForApiKeyCheck, bodyForPostMessage };
-  }
-
-  window.fetch = function(input, optionsArgument) {
-    let actualUrl;
-    let fetchCallArgs;
-    let effectiveOptions = {};
-    let bodyForApiKeyCheck;
-    let bodyForPostMessage;
-
-    if (typeof input === 'string') {
-      ({actualUrl, fetchCallArgs, effectiveOptions, bodyForApiKeyCheck, bodyForPostMessage} = handleStringInput(input, optionsArgument));
-    } else if (input instanceof Request) {
-      ({actualUrl, fetchCallArgs, effectiveOptions, bodyForApiKeyCheck, bodyForPostMessage} = handleRequestInput(input, optionsArgument));
-    } else {
-      return originalFetch.apply(window, [input, optionsArgument]);
-    }
-
-    effectiveOptions.method = effectiveOptions.method || 'GET';
-    if (!effectiveOptions.headers) {
-      effectiveOptions.headers = new Headers();
-    }
-
-
-    if (typeof actualUrl === 'string' && googleLlmBaseApiUrls.some((url) => actualUrl.startsWith(url))) {
-      let apiKeyIsNull = true;
-
-      const regex = new RegExp("models/([^:]+)");
-      const modelNameMatch = actualUrl.match(regex);
-      const modelName = modelNameMatch ? modelNameMatch[1] : 'unspecified';
-
-
-      try {
-        const urlObject = new URL(actualUrl);  // Use URL object for robust parsing
-        const apiKeyParam = urlObject.searchParams.get('key');
-        if (apiKeyParam) {
-          apiKeyIsNull = false;
-        }
-      } catch (e) {
-        // Continue checks even if URL parsing fails
-      }
-
-      if (apiKeyIsNull && effectiveOptions.headers) {
-        const h = new Headers(effectiveOptions.headers);
-        const apiKeyHeaderValue = h.get('X-API-Key') || h.get('x-api-key');
-        if (apiKeyHeaderValue) {
-          apiKeyIsNull = false;
-          return originalFetch.apply(window, fetchCallArgs);
-        }
-      }
-
-      if (apiKeyIsNull && effectiveOptions.method && ['POST', 'PUT', 'PATCH'].includes(effectiveOptions.method.toUpperCase()) && typeof bodyForApiKeyCheck === 'string') {
-        try {
-          const bodyData = JSON.parse(bodyForApiKeyCheck);
-          if (bodyData && bodyData.apiKey) {
-            apiKeyIsNull = false;
-            return originalFetch.apply(window, fetchCallArgs);
-          }
-        } catch (e) {
-          // Ignore JSON parsing errors
-        }
-      }
-
-      if(apiKeyIsNull) {
-        const promiseId = nextPromiseId++;
-        const promise = new Promise((resolve) => {
-          pendingFetchResolvers[promiseId] = (resolvedResponse) => {
-            delete pendingFetchResolvers[promiseId];
-            resolve(resolvedResponse);
-          };
-        });
-
-        let serializedBodyForPostMessage;
-        if (typeof bodyForPostMessage === 'string' || bodyForPostMessage == null) {
-            serializedBodyForPostMessage = bodyForPostMessage;
-        } else if (bodyForPostMessage instanceof ReadableStream) {
-            serializedBodyForPostMessage = null;
-        } else {
-            try {
-                serializedBodyForPostMessage = JSON.stringify(bodyForPostMessage);
-            } catch (e) {
-                serializedBodyForPostMessage = null;
-            }
-        }
-
-        const messageOptions = {
-            method: effectiveOptions.method,
-            headers: Object.fromEntries(new Headers(effectiveOptions.headers).entries()),
-            body: serializedBodyForPostMessage
-        };
-
-        window.parent.postMessage({
-          type: 'requestFetch',
-          url: actualUrl,
-          modelName: modelName,
-          options: messageOptions,
-          promiseId: promiseId,
-        }, '*');
-
-        return promise;
-      }
-      return originalFetch.apply(window, fetchCallArgs);
-    }
-    return originalFetch.apply(window, fetchCallArgs);
-  };
-
-  window.addEventListener('message', function(event) {
-    if (event.data && event.data.type === 'resolveFetch') {
-      const { promiseId, response } = event.data;
-      if (pendingFetchResolvers[promiseId]) {
-        try {
-          const reconstructedResponse = new Response(response.body, {
-            status: response.status,
-            statusText: response.statusText,
-            headers: new Headers(response.headers),
-          });
-          pendingFetchResolvers[promiseId](reconstructedResponse);
-        } catch (error) {
-          pendingFetchResolvers[promiseId](new Response(null, { status: 500, statusText: "Interceptor Response Reconstruction Error" }));
-        }
-      }
-    }
-  });
-
-}))({"textModelName":"gemini-3-flash-preview","imageModelName":"imagen-4.0-generate-001","imageEditModelName":"gemini-3.1-flash-image","imageTransformModelName":"gemini-3-pro-image","videoModelName":"veo-2.0-generate-001","ttsModelName":"gemini-2.5-flash-preview-tts","deprecatedTextModelNames":["gemini-2.0-flash","gemini-2.5-flash","gemini-2.5-flash-preview-04-17","gemini-2.5-flash-preview-05-20","gemini-2.5-flash-preview-09-2025"],"deprecatedImageModelNames":["imagen-3.0-generate-001","imagen-3.0-generate-002"],"deprecatedGenerateImageModelNames":["gemini-2.5-flash-image-preview","gemini-2.5-flash-image","gemini-3.1-flash-image-preview"],"deprecatedImageTransformModelNames":["gemini-3-pro-image-preview-11-2025"]})</script><script data-bard-client-injected="true">(function(){'use strict';function a(){window.parent.postMessage({type:"interaction"},"*")}window.addEventListener("click",a,{capture:!0,passive:!0});window.addEventListener("touchstart",a,{capture:!0,passive:!0});window.addEventListener("keydown",a,{capture:!0,passive:!0});}).call(this);
-</script><script data-bard-client-injected="true">(function() {
-  const originalConsoleLog = console.log;
-  const originalConsoleError = console.error;
-
-    /**
-   * Normalizes an error event or a promise rejection reason into a structured error object.
-   * @param {*} errorEventOrReason The error object or reason.
-   * @return {object} Structured error data { message, name, stack }.
-   */
-  function getErrorObject(errorEventOrReason) {
-    if (errorEventOrReason instanceof Error) {
-      return {
-        message: errorEventOrReason.message,
-        name: errorEventOrReason.name,
-        stack: errorEventOrReason.stack,
-      };
-    }
-    // Fallback for non-Error objects.
-    try {
-      return {
-        message: JSON.stringify(errorEventOrReason),
-        name: 'UnknownErrorType',
-        stack: null,
-      };
-    } catch (e) {
-      return {
-        message: String(errorEventOrReason),
-        name: 'UnknownErrorTypeNonStringifiable',
-        stack: null,
-      };
-    }
-  }
-
-  /**
-   * Converts an array of arguments (from log/error) into a single string.
-   * Handles Error objects specially to include their message and stack.
-   * @param {Array<*>} args - Arguments passed to console methods.
-   * @return {string} A string representation of the arguments.
-   */
-  function stringifyArgs(args) {
-    return args
-      .map((arg) => {
-        if (arg instanceof Error) {
-          const {message, stack} = arg;
-          return `Error: ${message}${stack ? ('\nStack: ' + stack) : ''}`;
-        }
-        if (typeof arg === 'object' && arg !== null) {
-          try {
-            return JSON.stringify(arg);
-          } catch (error) {
-            return '[Circular Object]';
-          }
-        } else {
-          return String(arg);
-        }
-      })
-      .join(' ');
-  }
-
-  console.log = function(...args) {
-    const logString = stringifyArgs(args);
-    window.parent.postMessage({ type: 'log', message: logString }, '*');
-    originalConsoleLog.apply(console, args);
-  };
-
-  console.error = function(...args) {
-    let errorData;
-    if (args.length > 0 && args[0] instanceof Error) {
-      const err = args[0];
-      // If the first arg is an Error, capture its details.
-      errorData = {
-        type: 'error',
-        source: 'CONSOLE_ERROR',
-        ...getErrorObject(err),
-        rawArgsString: stringifyArgs(args.slice(1)),
-        timestamp: new Date().toISOString(),
-      };
-    } else {
-      // If not an Error object, treat all args as a general error message.
-      errorData = {
-        type: 'error',
-        source: 'CONSOLE_ERROR',
-        message: stringifyArgs(args),
-        name: 'ConsoleLoggedError',
-        stack: null,
-        timestamp: new Date().toISOString(),
-      };
-    }
-    window.parent.postMessage(errorData, '*');
-    originalConsoleError.apply(console, args);
-  };
-
-  // Listen for global unhandled synchronous errors.
-  window.addEventListener('error', function(event) {
-    const errorDetails = event.error ? getErrorObject(event.error) : {
-      message: event.message,
-      name: 'GlobalError',
-      stack: null,
-      filename: event.filename,
-      lineno: event.lineno,
-      colno: event.colno,
-    };
-
-    window.parent.postMessage({
-      type: 'error',
-      source: 'global',
-      ...errorDetails,
-      message: errorDetails.message || event.message,
-      timestamp: new Date().toISOString(),
-    }, '*');
-  });
-
-  // Listen for unhandled promise rejections (asynchronous errors).
-  window.addEventListener('unhandledrejection', function(event) {
-    const errorDetails = getErrorObject(event.reason);
-
-    window.parent.postMessage({
-      type: 'error',
-      source: 'unhandledrejection',
-      ...errorDetails,
-      message: errorDetails.message || 'Unhandled Promise Rejection',
-      timestamp: new Date().toISOString(),
-    }, '*');
-  });
-
-})();</script>
+<html lang="vi" class="antialiased selection:bg-amber-500/20 selection:text-amber-600">
+<head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="iBookPDF">
-    <title>iBookPDF - Trình Đọc PDF &amp; Đồng Dạng Chữ Tối Ưu Cho iPhone</title>
+    <meta name="theme-color" id="metaThemeColor" content="#F4F1EA">
+    <title>iBookPDF - Trình Đọc PDF & Đồng Dạng Chữ Tối Ưu Cho iPhone</title>
 
     <!-- Google Fonts hỗ trợ tiếng Việt đầy đủ & sắc nét -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;family=Merriweather:ital,wght@0,400;0,700;1,400&amp;family=Roboto:wght@400;500;700&amp;display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Merriweather:ital,wght@0,400;0,700;1,400&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 
     <!-- Phosphor Icons -->
-    <script src="https://unpkg.com/@phosphor-icons/web" crossorigin="anonymous"></script><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.2/src/regular/style.css"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.2/src/thin/style.css"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.2/src/light/style.css"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.2/src/bold/style.css"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.2/src/fill/style.css"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.2/src/duotone/style.css">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
 
     <!-- Thư viện PDF.js từ CDN -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 
     <script>
         tailwind.config = {
@@ -686,16 +85,20 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
             --accent-color: #FF9F0A;
         }
 
-        [data-theme="kindle"] {
-            --bg-primary: #F4F1EA;
-            --bg-secondary: #E8E3D8;
-            --bg-sheet: rgba(244, 241, 234, 0.97);
-            --text-primary: #181818;
-            --text-secondary: #5A5751;
-            --border-color: rgba(24, 24, 24, 0.16);
-            --accent-color: #2B5B84;
-            background-image: radial-gradient(rgba(0, 0, 0, 0.03) 1px, transparent 0);
-            background-size: 4px 4px;
+        /* Lớp phủ ánh sáng ấm Warm Light */
+        #warmLightOverlay {
+            pointer-events: none;
+            position: fixed;
+            inset: 0;
+            z-index: 35;
+            background-color: rgba(255, 147, 41, 0);
+            transition: background-color 0.25s ease;
+        }
+
+        html {
+            background-color: var(--bg-primary);
+            color-scheme: light dark;
+            transition: background-color 0.25s ease;
         }
 
         body {
@@ -735,6 +138,19 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
             color: var(--text-primary);
             text-align: left;
         }
+
+        /* Highlight màu sắc văn bản */
+        .hl-yellow { background-color: rgba(254, 240, 138, 0.65); border-radius: 3px; padding: 1px 2px; }
+        .hl-green { background-color: rgba(187, 247, 208, 0.65); border-radius: 3px; padding: 1px 2px; }
+        .hl-pink { background-color: rgba(251, 207, 232, 0.65); border-radius: 3px; padding: 1px 2px; }
+        .hl-blue { background-color: rgba(191, 219, 254, 0.65); border-radius: 3px; padding: 1px 2px; }
+        [data-theme="oled"] .hl-yellow, [data-theme="dark"] .hl-yellow { background-color: rgba(234, 179, 8, 0.35); color: #fef08a; }
+        [data-theme="oled"] .hl-green, [data-theme="dark"] .hl-green { background-color: rgba(34, 197, 94, 0.35); color: #bbf7d0; }
+        [data-theme="oled"] .hl-pink, [data-theme="dark"] .hl-pink { background-color: rgba(236, 72, 153, 0.35); color: #fbcfe8; }
+        [data-theme="oled"] .hl-blue, [data-theme="dark"] .hl-blue { background-color: rgba(59, 130, 246, 0.35); color: #bfdbfe; }
+
+        /* Bionic Reading fix */
+        .bionic-lead { font-weight: 700; opacity: 1; }
 
         /* ================= HIỆU ỨNG FLIPBOOK & KINDLE PAGE TURN ================= */
         .flipbook-stage {
@@ -849,16 +265,19 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
         .pt-safe { padding-top: max(0.75rem, env(safe-area-inset-top)); }
         .pb-safe { padding-bottom: max(0.9rem, env(safe-area-inset-bottom)); }
     </style>
-<style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:"Roboto", sans-serif;font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:"JetBrains Mono", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.pointer-events-none{pointer-events:none}.invisible{visibility:hidden}.fixed{position:fixed}.absolute{position:absolute}.relative{position:relative}.inset-0{inset:0px}.-left-\[9999px\]{left:-9999px}.bottom-0{bottom:0px}.left-0{left:0px}.left-3{left:0.75rem}.right-0{right:0px}.right-1{right:0.25rem}.right-1\.5{right:0.375rem}.right-2\.5{right:0.625rem}.top-0{top:0px}.top-1{top:0.25rem}.top-1\.5{top:0.375rem}.top-1\/2{top:50%}.left-1\/2{left:50%}.top-16{top:4rem}.z-30{z-index:30}.z-40{z-index:40}.z-50{z-index:50}.mx-auto{margin-left:auto;margin-right:auto}.my-12{margin-top:3rem;margin-bottom:3rem}.mb-1{margin-bottom:0.25rem}.mb-3{margin-bottom:0.75rem}.ml-0\.5{margin-left:0.125rem}.mt-0\.5{margin-top:0.125rem}.mt-2{margin-top:0.5rem}.mt-4{margin-top:1rem}.flex{display:flex}.inline-flex{display:inline-flex}.grid{display:grid}.hidden{display:none}.h-10{height:2.5rem}.h-12{height:3rem}.h-2{height:0.5rem}.h-20{height:5rem}.h-8{height:2rem}.h-9{height:2.25rem}.h-auto{height:auto}.h-full{height:100%}.max-h-60{max-height:15rem}.max-h-\[88vh\]{max-height:88vh}.max-h-72{max-height:18rem}.max-h-96{max-height:24rem}.max-h-\[85vh\]{max-height:85vh}.max-h-\[90vh\]{max-height:90vh}.min-h-screen{min-height:100vh}.w-10{width:2.5rem}.w-12{width:3rem}.w-2{width:0.5rem}.w-20{width:5rem}.w-8{width:2rem}.w-9{width:2.25rem}.w-\[26\%\]{width:26%}.w-\[48\%\]{width:48%}.w-full{width:100%}.min-w-0{min-width:0px}.max-w-2xl{max-width:42rem}.max-w-3xl{max-width:48rem}.max-w-\[110px\]{max-width:110px}.max-w-\[60\%\]{max-width:60%}.max-w-full{max-width:100%}.max-w-lg{max-width:32rem}.max-w-xl{max-width:36rem}.max-w-xs{max-width:20rem}.flex-1{flex:1 1 0%}.shrink-0{flex-shrink:0}.-translate-y-1\/2{--tw-translate-y:-50%;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.-translate-x-1\/2{--tw-translate-x:-50%;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}@keyframes ping{75%, 100%{transform:scale(2);opacity:0}}.animate-ping{animation:ping 1s cubic-bezier(0, 0, 0.2, 1) infinite}@keyframes spin{to{transform:rotate(360deg)}}.animate-spin{animation:spin 1s linear infinite}.cursor-pointer{cursor:pointer}.select-none{-webkit-user-select:none;user-select:none}.select-text{-webkit-user-select:text;user-select:text}.grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}.grid-cols-5{grid-template-columns:repeat(5, minmax(0, 1fr))}.flex-col{flex-direction:column}.flex-wrap{flex-wrap:wrap}.items-end{align-items:flex-end}.items-center{align-items:center}.justify-center{justify-content:center}.justify-between{justify-content:space-between}.gap-0\.5{gap:0.125rem}.gap-1{gap:0.25rem}.gap-1\.5{gap:0.375rem}.gap-2{gap:0.5rem}.gap-2\.5{gap:0.625rem}.gap-3{gap:0.75rem}.space-y-1\.5 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.375rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.375rem * var(--tw-space-y-reverse))}.space-y-2 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.5rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.5rem * var(--tw-space-y-reverse))}.space-y-2\.5 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.625rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.625rem * var(--tw-space-y-reverse))}.space-y-3 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.75rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.75rem * var(--tw-space-y-reverse))}.space-y-4 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1rem * var(--tw-space-y-reverse))}.space-y-6 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1.5rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1.5rem * var(--tw-space-y-reverse))}.overflow-hidden{overflow:hidden}.overflow-x-auto{overflow-x:auto}.overflow-y-auto{overflow-y:auto}.truncate{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.rounded-2xl{border-radius:1rem}.rounded-3xl{border-radius:1.5rem}.rounded-\[22px\]{border-radius:22px}.rounded-full{border-radius:9999px}.rounded-lg{border-radius:0.5rem}.rounded-md{border-radius:0.375rem}.rounded-xl{border-radius:0.75rem}.rounded-t-3xl{border-top-left-radius:1.5rem;border-top-right-radius:1.5rem}.border{border-width:1px}.border-2{border-width:2px}.border-4{border-width:4px}.border-b{border-bottom-width:1px}.border-l{border-left-width:1px}.border-r{border-right-width:1px}.border-t{border-top-width:1px}.border-dashed{border-style:dashed}.border-amber-500{--tw-border-opacity:1;border-color:rgb(245 158 11 / var(--tw-border-opacity, 1))}.border-blue-500\/40{border-color:rgb(59 130 246 / 0.4)}.border-emerald-500\/40{border-color:rgb(16 185 129 / 0.4)}.border-transparent{border-color:transparent}.border-t-transparent{border-top-color:transparent}.bg-\[\#000000\]{--tw-bg-opacity:1;background-color:rgb(0 0 0 / var(--tw-bg-opacity, 1))}.bg-\[\#1C1C1E\]{--tw-bg-opacity:1;background-color:rgb(28 28 30 / var(--tw-bg-opacity, 1))}.bg-\[\#F4F1EA\]{--tw-bg-opacity:1;background-color:rgb(244 241 234 / var(--tw-bg-opacity, 1))}.bg-\[\#F8F1E3\]{--tw-bg-opacity:1;background-color:rgb(248 241 227 / var(--tw-bg-opacity, 1))}.bg-\[\#FFFFFF\]{--tw-bg-opacity:1;background-color:rgb(255 255 255 / var(--tw-bg-opacity, 1))}.bg-amber-500{--tw-bg-opacity:1;background-color:rgb(245 158 11 / var(--tw-bg-opacity, 1))}.bg-amber-500\/15{background-color:rgb(245 158 11 / 0.15)}.bg-amber-500\/5{background-color:rgb(245 158 11 / 0.05)}.bg-black\/10{background-color:rgb(0 0 0 / 0.1)}.bg-black\/40{background-color:rgb(0 0 0 / 0.4)}.bg-blue-500{--tw-bg-opacity:1;background-color:rgb(59 130 246 / var(--tw-bg-opacity, 1))}.bg-blue-500\/10{background-color:rgb(59 130 246 / 0.1)}.bg-emerald-500\/10{background-color:rgb(16 185 129 / 0.1)}.bg-black\/5{background-color:rgb(0 0 0 / 0.05)}.bg-black\/50{background-color:rgb(0 0 0 / 0.5)}.bg-black\/85{background-color:rgb(0 0 0 / 0.85)}.bg-blue-500\/15{background-color:rgb(59 130 246 / 0.15)}.bg-gradient-to-br{background-image:linear-gradient(to bottom right, var(--tw-gradient-stops))}.from-amber-500{--tw-gradient-from:#f59e0b var(--tw-gradient-from-position);--tw-gradient-to:rgb(245 158 11 / 0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), var(--tw-gradient-to)}.from-blue-500{--tw-gradient-from:#3b82f6 var(--tw-gradient-from-position);--tw-gradient-to:rgb(59 130 246 / 0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), var(--tw-gradient-to)}.to-orange-600{--tw-gradient-to:#ea580c var(--tw-gradient-to-position)}.to-indigo-600{--tw-gradient-to:#4f46e5 var(--tw-gradient-to-position)}.p-0\.5{padding:0.125rem}.p-1{padding:0.25rem}.p-1\.5{padding:0.375rem}.p-2{padding:0.5rem}.p-2\.5{padding:0.625rem}.p-3{padding:0.75rem}.p-3\.5{padding:0.875rem}.p-5{padding:1.25rem}.p-6{padding:1.5rem}.p-0{padding:0px}.p-4{padding:1rem}.px-1\.5{padding-left:0.375rem;padding-right:0.375rem}.px-2{padding-left:0.5rem;padding-right:0.5rem}.px-2\.5{padding-left:0.625rem;padding-right:0.625rem}.px-3{padding-left:0.75rem;padding-right:0.75rem}.px-3\.5{padding-left:0.875rem;padding-right:0.875rem}.px-4{padding-left:1rem;padding-right:1rem}.px-5{padding-left:1.25rem;padding-right:1.25rem}.px-6{padding-left:1.5rem;padding-right:1.5rem}.py-0\.5{padding-top:0.125rem;padding-bottom:0.125rem}.py-1{padding-top:0.25rem;padding-bottom:0.25rem}.py-1\.5{padding-top:0.375rem;padding-bottom:0.375rem}.py-2{padding-top:0.5rem;padding-bottom:0.5rem}.py-2\.5{padding-top:0.625rem;padding-bottom:0.625rem}.py-3{padding-top:0.75rem;padding-bottom:0.75rem}.py-3\.5{padding-top:0.875rem;padding-bottom:0.875rem}.py-4{padding-top:1rem;padding-bottom:1rem}.pb-1{padding-bottom:0.25rem}.pb-2{padding-bottom:0.5rem}.pb-20{padding-bottom:5rem}.pb-24{padding-bottom:6rem}.pl-9{padding-left:2.25rem}.pr-8{padding-right:2rem}.pt-1{padding-top:0.25rem}.pt-14{padding-top:3.5rem}.pt-2{padding-top:0.5rem}.pt-2\.5{padding-top:0.625rem}.pt-20{padding-top:5rem}.pt-3{padding-top:0.75rem}.pb-3{padding-bottom:0.75rem}.text-left{text-align:left}.text-center{text-align:center}.font-mono{font-family:"JetBrains Mono", monospace}.font-sans{font-family:"Roboto", sans-serif}.font-serif{font-family:"Merriweather", Georgia, serif}.font-system{font-family:-apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif}.text-2xl{font-size:1.5rem;line-height:2rem}.text-4xl{font-size:2.25rem;line-height:2.5rem}.text-\[10px\]{font-size:10px}.text-\[11px\]{font-size:11px}.text-base{font-size:1rem;line-height:1.5rem}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-sm{font-size:0.875rem;line-height:1.25rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.text-xs{font-size:0.75rem;line-height:1rem}.font-bold{font-weight:700}.font-medium{font-weight:500}.font-semibold{font-weight:600}.uppercase{text-transform:uppercase}.leading-relaxed{line-height:1.625}.leading-normal{line-height:1.5}.leading-tight{line-height:1.25}.tracking-tight{letter-spacing:-0.025em}.tracking-wider{letter-spacing:0.05em}.text-\[\#181818\]{--tw-text-opacity:1;color:rgb(24 24 24 / var(--tw-text-opacity, 1))}.text-\[\#1C1C1E\]{--tw-text-opacity:1;color:rgb(28 28 30 / var(--tw-text-opacity, 1))}.text-\[\#3C2F23\]{--tw-text-opacity:1;color:rgb(60 47 35 / var(--tw-text-opacity, 1))}.text-\[\#D1D1D6\]{--tw-text-opacity:1;color:rgb(209 209 214 / var(--tw-text-opacity, 1))}.text-\[\#E5E5EA\]{--tw-text-opacity:1;color:rgb(229 229 234 / var(--tw-text-opacity, 1))}.text-amber-500{--tw-text-opacity:1;color:rgb(245 158 11 / var(--tw-text-opacity, 1))}.text-amber-600{--tw-text-opacity:1;color:rgb(217 119 6 / var(--tw-text-opacity, 1))}.text-blue-500{--tw-text-opacity:1;color:rgb(59 130 246 / var(--tw-text-opacity, 1))}.text-blue-600{--tw-text-opacity:1;color:rgb(37 99 235 / var(--tw-text-opacity, 1))}.text-emerald-500{--tw-text-opacity:1;color:rgb(16 185 129 / var(--tw-text-opacity, 1))}.text-emerald-600{--tw-text-opacity:1;color:rgb(5 150 105 / var(--tw-text-opacity, 1))}.text-purple-500{--tw-text-opacity:1;color:rgb(168 85 247 / var(--tw-text-opacity, 1))}.text-red-500{--tw-text-opacity:1;color:rgb(239 68 68 / var(--tw-text-opacity, 1))}.text-white{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.underline{-webkit-text-decoration-line:underline;text-decoration-line:underline}.antialiased{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}.opacity-50{opacity:0.5}.opacity-60{opacity:0.6}.opacity-65{opacity:0.65}.opacity-70{opacity:0.7}.opacity-75{opacity:0.75}.opacity-80{opacity:0.8}.opacity-0{opacity:0}.opacity-85{opacity:0.85}.shadow{--tw-shadow:0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);--tw-shadow-colored:0 1px 3px 0 var(--tw-shadow-color), 0 1px 2px -1px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-2xl{--tw-shadow:0 25px 50px -12px rgb(0 0 0 / 0.25);--tw-shadow-colored:0 25px 50px -12px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-lg{--tw-shadow:0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);--tw-shadow-colored:0 10px 15px -3px var(--tw-shadow-color), 0 4px 6px -4px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-md{--tw-shadow:0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);--tw-shadow-colored:0 4px 6px -1px var(--tw-shadow-color), 0 2px 4px -2px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-sm{--tw-shadow:0 1px 2px 0 rgb(0 0 0 / 0.05);--tw-shadow-colored:0 1px 2px 0 var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.backdrop-blur-\[2px\]{--tw-backdrop-blur:blur(2px);-webkit-backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia)}.backdrop-blur{--tw-backdrop-blur:blur(8px);-webkit-backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia)}.transition{transition-property:color, background-color, border-color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-text-decoration-color, -webkit-backdrop-filter;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, -webkit-text-decoration-color, -webkit-backdrop-filter;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.transition-all{transition-property:all;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.transition-transform{transition-property:transform;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.transition-opacity{transition-property:opacity;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.duration-200{transition-duration:200ms}.duration-300{transition-duration:300ms}.selection\:bg-amber-500\/20 *::selection{background-color:rgb(245 158 11 / 0.2)}.selection\:text-amber-600 *::selection{--tw-text-opacity:1;color:rgb(217 119 6 / var(--tw-text-opacity, 1))}.selection\:bg-amber-500\/20::selection{background-color:rgb(245 158 11 / 0.2)}.selection\:text-amber-600::selection{--tw-text-opacity:1;color:rgb(217 119 6 / var(--tw-text-opacity, 1))}.hover\:bg-black\/10:hover{background-color:rgb(0 0 0 / 0.1)}.hover\:bg-black\/5:hover{background-color:rgb(0 0 0 / 0.05)}.hover\:opacity-100:hover{opacity:1}.hover\:opacity-80:hover{opacity:0.8}.hover\:opacity-90:hover{opacity:0.9}.hover\:opacity-95:hover{opacity:0.95}.focus\:outline-none:focus{outline:2px solid transparent;outline-offset:2px}.active\:scale-90:active{--tw-scale-x:.9;--tw-scale-y:.9;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.active\:scale-95:active{--tw-scale-x:.95;--tw-scale-y:.95;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.active\:scale-\[0\.98\]:active{--tw-scale-x:0.98;--tw-scale-y:0.98;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}@media (min-width: 640px){.sm\:inline{display:inline}.sm\:max-w-\[180px\]{max-width:180px}.sm\:items-center{align-items:center}.sm\:rounded-3xl{border-radius:1.5rem}.sm\:p-8{padding:2rem}.sm\:p-4{padding:1rem}.sm\:px-4{padding-left:1rem;padding-right:1rem}.sm\:text-3xl{font-size:1.875rem;line-height:2.25rem}.sm\:text-sm{font-size:0.875rem;line-height:1.25rem}}@media (prefers-color-scheme: dark){.dark\:bg-white\/10{background-color:rgb(255 255 255 / 0.1)}.dark\:bg-white\/5{background-color:rgb(255 255 255 / 0.05)}.dark\:text-amber-400{--tw-text-opacity:1;color:rgb(251 191 36 / var(--tw-text-opacity, 1))}.dark\:text-blue-400{--tw-text-opacity:1;color:rgb(96 165 250 / var(--tw-text-opacity, 1))}.dark\:text-emerald-400{--tw-text-opacity:1;color:rgb(52 211 153 / var(--tw-text-opacity, 1))}}</style></head>
+</head>
 <body class="min-h-screen flex flex-col justify-between select-text">
+
+    <!-- Lớp phủ Ánh sáng ấm Warm Light -->
+    <div id="warmLightOverlay"></div>
 
     <!-- ================= THANH ĐIỀU HƯỚNG TRÊN CÙNG (TOP BAR) ================= -->
     <header id="topBar" class="fixed top-0 left-0 right-0 z-40 ios-blur border-b pt-safe transition-transform duration-300">
         <div class="max-w-3xl mx-auto px-3 py-2 flex items-center justify-between gap-2">
             <div class="flex items-center gap-1.5">
-                <button onclick="showWelcomeScreen()" title="Đổi tài liệu khác" class="p-2 rounded-xl hover:bg-black/5 active:scale-95 transition flex items-center gap-1.5 text-sm font-medium">
-                    <i class="ph ph-folder-open text-xl" style="color: var(--accent-color)"></i>
-                    <span id="docShortTitle" class="max-w-[110px] sm:max-w-[180px] truncate font-semibold">iBookPDF</span>
+                <button onclick="showWelcomeScreen()" title="Thư viện sách" class="p-2 rounded-xl hover:bg-black/5 active:scale-95 transition flex items-center gap-1.5 text-sm font-medium">
+                    <i class="ph ph-books text-xl" style="color: var(--accent-color)"></i>
+                    <span id="docShortTitle" class="max-w-[100px] sm:max-w-[160px] truncate font-semibold">Thư viện</span>
                 </button>
             </div>
 
@@ -876,9 +295,17 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
 
             <!-- Cụm công cụ bên phải -->
             <div class="flex items-center gap-0.5">
-                <button onclick="openModal('historyModal')" title="Lịch sử sách &amp; Tiến trình đọc" class="p-2 rounded-full hover:bg-black/5 active:scale-90 transition relative">
-                    <i class="ph ph-clock-counter-clockwise text-xl"></i>
-                    <span id="historyBadgeCount" class="hidden absolute top-1 right-1 w-2 h-2 rounded-full bg-blue-500"></span>
+                <!-- Nút Bookmark -->
+                <button id="btnBookmarkTop" onclick="toggleCurrentBookmark()" title="Đánh dấu trang này" class="p-2 rounded-full hover:bg-black/5 active:scale-90 transition">
+                    <i id="iconBookmarkTop" class="ph ph-bookmark-simple text-xl"></i>
+                </button>
+                <!-- Nút Tự động lật trang -->
+                <button id="btnAutoFlipTop" onclick="toggleAutoFlip()" title="Tự động lật trang" class="p-2 rounded-full hover:bg-black/5 active:scale-90 transition relative">
+                    <i id="iconAutoFlipTop" class="ph ph-play-circle text-xl"></i>
+                    <span id="autoFlipDot" class="hidden absolute top-1 right-1 w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                </button>
+                <button onclick="openModal('highlightsModal')" title="Trích dẫn & Bôi đậm" class="p-2 rounded-full hover:bg-black/5 active:scale-90 transition">
+                    <i class="ph ph-highlighter text-xl"></i>
                 </button>
                 <button onclick="togglePanel('searchPanel')" title="Tìm kiếm trong PDF" class="p-2 rounded-full hover:bg-black/5 active:scale-90 transition">
                     <i class="ph ph-magnifying-glass text-xl"></i>
@@ -887,14 +314,28 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
                     <i class="ph ph-speaker-high text-xl"></i>
                     <span id="ttsActiveDot" class="hidden absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-amber-500 animate-ping"></span>
                 </button>
-                <button onclick="togglePanel('typographySheet')" title="Tùy chỉnh cỡ chữ &amp; giao diện" class="px-2.5 py-1.5 rounded-xl font-serif font-bold text-base hover:bg-black/5 active:scale-90 transition border" style="border-color: var(--border-color)">
+                <button onclick="togglePanel('typographySheet')" title="Tùy chỉnh cỡ chữ & giao diện" class="px-2.5 py-1.5 rounded-xl font-serif font-bold text-base hover:bg-black/5 active:scale-90 transition border" style="border-color: var(--border-color)">
                     Aa
                 </button>
-                <button onclick="openModal('downloadModal')" title="Lưu App về máy" class="px-2.5 py-1.5 rounded-xl hover:bg-black/5 active:scale-90 transition flex items-center gap-1 font-semibold text-xs border" style="border-color: var(--accent-color); color: var(--accent-color);">
+                <button onclick="openModal('downloadModal')" title="Lưu App về máy" class="px-2 py-1.5 rounded-xl hover:bg-black/5 active:scale-90 transition flex items-center gap-1 font-semibold text-xs border" style="border-color: var(--accent-color); color: var(--accent-color);">
                     <i class="ph-bold ph-download-simple text-base"></i>
-                    <span class="hidden xs:inline">Lưu App</span>
+                </button>
+                <button id="btnToggleFullscreen" onclick="toggleImmersiveReaderBars()" title="Ẩn/Hiện thanh công cụ (Đọc toàn màn hình)" class="p-2 rounded-xl border hover:bg-black/5 active:scale-90 transition" style="border-color: var(--border-color); color: var(--text-primary);">
+                    <i id="iconToggleFullscreen" class="ph-bold ph-arrows-out-simple text-lg"></i>
                 </button>
             </div>
+        </div>
+
+        <!-- Popover Mini khi chọn văn bản để Highlight & Tra từ điển -->
+        <div id="selectionPopup" class="hidden fixed z-50 p-1.5 rounded-2xl shadow-2xl border flex items-center gap-1.5 ios-blur" style="border-color: var(--border-color);">
+            <button onclick="applyHighlight('yellow')" class="w-6 h-6 rounded-full bg-yellow-300 border border-black/10 active:scale-90 transition"></button>
+            <button onclick="applyHighlight('green')" class="w-6 h-6 rounded-full bg-emerald-300 border border-black/10 active:scale-90 transition"></button>
+            <button onclick="applyHighlight('pink')" class="w-6 h-6 rounded-full bg-pink-300 border border-black/10 active:scale-90 transition"></button>
+            <button onclick="applyHighlight('blue')" class="w-6 h-6 rounded-full bg-blue-300 border border-black/10 active:scale-90 transition"></button>
+            <div class="w-[1px] h-4 bg-black/15 dark:bg-white/15 mx-0.5"></div>
+            <button onclick="lookupSelectedWord()" class="px-2 py-1 rounded-xl text-xs font-semibold flex items-center gap-1 hover:bg-black/10 transition">
+                <i class="ph-bold ph-book-open"></i> Tra từ
+            </button>
         </div>
 
         <!-- Thanh Tìm kiếm mở rộng -->
@@ -902,7 +343,10 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
             <div class="max-w-2xl mx-auto flex items-center gap-2">
                 <div class="relative flex-1">
                     <i class="ph ph-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 opacity-50"></i>
-                    <input id="searchInput" type="text" placeholder="Tìm từ khóa trong toàn bộ tài liệu..." onkeydown="if(event.key==='Enter') executeSearch()" class="w-full pl-9 pr-8 py-2 rounded-xl text-sm focus:outline-none border" style="background-color: var(--bg-primary); color: var(--text-primary); border-color: var(--border-color);">
+                    <input id="searchInput" type="text" placeholder="Tìm từ khóa trong toàn bộ tài liệu..." 
+                        onkeydown="if(event.key==='Enter') executeSearch()"
+                        class="w-full pl-9 pr-8 py-2 rounded-xl text-sm focus:outline-none border"
+                        style="background-color: var(--bg-primary); color: var(--text-primary); border-color: var(--border-color);">
                     <button onclick="clearSearch()" class="absolute right-2.5 top-1/2 -translate-y-1/2 opacity-50 hover:opacity-100">
                         <i class="ph-fill ph-x-circle"></i>
                     </button>
@@ -959,7 +403,7 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
 
             <div class="space-y-2">
                 <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold bg-amber-500/15 text-amber-600 dark:text-amber-400">
-                    <i class="ph-fill ph-sparkle"></i> Lưu tiến trình &amp; đồng dạng chữ iPhone
+                    <i class="ph-fill ph-sparkle"></i> Lưu tiến trình & đồng dạng chữ iPhone
                 </span>
                 <h1 class="text-2xl sm:text-3xl font-bold tracking-tight">Đọc Sách PDF Mượt Mà, Không Cần Phóng To Kéo Ngang</h1>
                 <p class="text-sm leading-relaxed opacity-80">
@@ -981,7 +425,7 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
 
                 <button onclick="openModal('downloadModal')" class="w-full py-3.5 px-5 rounded-2xl font-bold text-sm border-2 flex items-center justify-center gap-2.5 hover:opacity-95 active:scale-[0.98] transition shadow-sm" style="background-color: var(--bg-primary); border-color: var(--accent-color); color: var(--accent-color);">
                     <i class="ph-bold ph-download-simple text-lg"></i>
-                    <span>Tải &amp; Lưu App (.html) về máy</span>
+                    <span>Tải & Lưu App (.html) về máy</span>
                 </button>
             </div>
 
@@ -997,6 +441,17 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
                     </div>
                     <span class="text-xs px-3 py-1.5 rounded-xl font-bold text-white shrink-0" style="background-color: var(--accent-color)">Đọc tiếp</span>
                 </button>
+            </div>
+
+            <!-- Tủ sách Offline (IndexedDB Bookshelf) -->
+            <div id="bookshelfSection" class="pt-2 text-left space-y-2">
+                <div class="flex items-center justify-between px-1">
+                    <span class="text-xs font-bold uppercase tracking-wider opacity-75">Tủ sách đã lưu trên iPhone</span>
+                    <span id="savedBooksCount" class="text-[10px] px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-600 font-bold">0 cuốn</span>
+                </div>
+                <div id="bookshelfList" class="space-y-2 max-h-48 overflow-y-auto">
+                    <!-- Danh sách các cuốn đã lưu offline -->
+                </div>
             </div>
 
             <div class="grid grid-cols-2 gap-3 text-left pt-2">
@@ -1017,7 +472,7 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
                 </div>
                 <div class="p-3.5 rounded-2xl border" style="background-color: var(--bg-primary); border-color: var(--border-color);">
                     <i class="ph-fill ph-moon-stars text-xl text-purple-500 mb-1"></i>
-                    <div class="text-xs font-bold">Giấy E-Ink &amp; Đêm OLED</div>
+                    <div class="text-xs font-bold">Giấy E-Ink & Đêm OLED</div>
                     <div class="text-[11px] opacity-70 mt-0.5">Bảo vệ mắt tối đa khi đọc sách buổi tối.</div>
                 </div>
             </div>
@@ -1047,9 +502,15 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
             </div>
         </div>
 
+        <!-- Thông tin tốc độ đọc & ước tính thời gian -->
+        <div class="px-4 py-1 flex items-center justify-between text-[10px] opacity-55 border-b select-none" style="border-color: var(--border-color);">
+            <span id="readingTimeEstimateLabel">Ước tính: Còn khoảng 10 phút</span>
+            <span id="readingSpeedLabel">Tốc độ: ~250 từ/phút</span>
+        </div>
+
         <!-- 1. CHẾ ĐỘ ĐỒNG DẠNG CHỮ -->
         <div id="flipbookStage" class="flipbook-stage flex-1 flex flex-col justify-between relative select-text">
-            <div id="flipbookSpineShadow" class="flipbook-spine-shadow" style="opacity: 0;"></div>
+            <div id="flipbookSpineShadow" class="flipbook-spine-shadow"></div>
 
             <article id="reflowViewport" class="reflow-content flipbook-page-card flex-1 pt-3 pb-2 select-text">
             </article>
@@ -1060,6 +521,11 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
                     <span id="readingPercentLabel" class="font-mono">100%</span>
                 </div>
             </div>
+
+            <!-- Nút nổi phụ trợ ẩn/hiện thanh công cụ khi đang ở chế độ toàn màn hình -->
+            <button id="floatingShowBarsBtn" onclick="toggleImmersiveReaderBars()" class="hidden fixed bottom-6 right-5 z-40 p-3 rounded-full shadow-2xl border active:scale-90 transition items-center justify-center" style="background-color: var(--bg-sheet); border-color: var(--border-color); color: var(--text-primary);">
+                <i class="ph-bold ph-arrows-in-simple text-lg"></i>
+            </button>
 
             <div id="kindleTapZonesHint" class="hidden absolute inset-0 z-30 pointer-events-none flex">
                 <div class="w-[26%] h-full bg-blue-500/10 border-r border-dashed border-blue-500/40 flex flex-col items-center justify-center p-2 text-center">
@@ -1142,7 +608,10 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
                     <i class="ph-bold ph-caret-left text-lg"></i>
                 </button>
 
-                <input id="pageSlider" type="range" min="1" max="1" value="1" oninput="onPageSliderInput(this.value)" onchange="goToPage(parseInt(this.value))" class="flex-1">
+                <input id="pageSlider" type="range" min="1" max="1" value="1" 
+                    oninput="onPageSliderInput(this.value)" 
+                    onchange="goToPage(parseInt(this.value))"
+                    class="flex-1">
 
                 <button onclick="turnStep(1)" title="Lật trang sau" class="p-1.5 rounded-lg hover:bg-black/5 active:scale-90">
                     <i class="ph-bold ph-caret-right text-lg"></i>
@@ -1159,7 +628,7 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
     <div id="typographySheet" class="hidden fixed inset-0 z-50 flex items-end justify-center bg-black/40 backdrop-blur-[2px]" onclick="if(event.target===this) togglePanel('typographySheet')">
         <div class="w-full max-w-lg max-h-[88vh] overflow-y-auto rounded-t-3xl ios-blur border-t p-5 pb-safe space-y-4 shadow-2xl" style="border-color: var(--border-color);">
             <div class="flex items-center justify-between">
-                <span class="text-sm font-bold tracking-tight">Tùy chỉnh Hiển thị &amp; Lật trang Kindle</span>
+                <span class="text-sm font-bold tracking-tight">Tùy chỉnh Hiển thị & Lật trang Kindle</span>
                 <button onclick="togglePanel('typographySheet')" class="w-8 h-8 rounded-full flex items-center justify-center bg-black/10 dark:bg-white/10">
                     <i class="ph-bold ph-x text-sm"></i>
                 </button>
@@ -1178,22 +647,22 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
                 </div>
 
                 <div class="grid grid-cols-2 gap-2">
-                    <button onclick="setReadingLayout('flipbook')" id="layoutBtn-flipbook" class="py-2.5 px-3 rounded-xl border-2 text-xs font-bold flex items-center justify-center gap-1.5 transition" style="background-color: var(--bg-secondary); border-color: var(--accent-color); color: var(--accent-color);">
+                    <button onclick="setReadingLayout('flipbook')" id="layoutBtn-flipbook" class="py-2.5 px-3 rounded-xl border-2 text-xs font-bold flex items-center justify-center gap-1.5 transition" style="background-color: var(--bg-secondary);">
                         <i class="ph-fill ph-book-open text-base"></i>
                         <span>Lật trang Kindle</span>
                     </button>
-                    <button onclick="setReadingLayout('scroll')" id="layoutBtn-scroll" class="py-2.5 px-3 rounded-xl border-2 text-xs font-bold flex items-center justify-center gap-1.5 transition" style="background-color: var(--bg-secondary); border-color: transparent; color: var(--text-primary);">
+                    <button onclick="setReadingLayout('scroll')" id="layoutBtn-scroll" class="py-2.5 px-3 rounded-xl border-2 text-xs font-bold flex items-center justify-center gap-1.5 transition" style="background-color: var(--bg-secondary);">
                         <i class="ph-bold ph-arrows-down-up text-base"></i>
                         <span>Cuộn dọc liên tục</span>
                     </button>
                 </div>
 
-                <div id="flipAnimationSelector" class="pt-1 space-y-1.5" style="display: block;">
+                <div id="flipAnimationSelector" class="pt-1 space-y-1.5">
                     <div class="text-[11px] font-semibold opacity-70">Hiệu ứng lật trang:</div>
                     <div class="grid grid-cols-3 gap-1.5">
-                        <button onclick="setFlipAnimation('3d')" id="animBtn-3d" class="py-1.5 px-2 rounded-lg border text-[11px] font-semibold transition" style="border-color: var(--border-color); color: var(--text-primary); background-color: var(--bg-primary);">Lật 3D</button>
-                        <button onclick="setFlipAnimation('slide')" id="animBtn-slide" class="py-1.5 px-2 rounded-lg border text-[11px] font-semibold transition" style="border-color: var(--accent-color); color: var(--accent-color); background-color: var(--bg-secondary);">Trượt Kindle</button>
-                        <button onclick="setFlipAnimation('fade')" id="animBtn-fade" class="py-1.5 px-2 rounded-lg border text-[11px] font-semibold transition" style="border-color: var(--border-color); color: var(--text-primary); background-color: var(--bg-primary);">E-Ink Mờ</button>
+                        <button onclick="setFlipAnimation('3d')" id="animBtn-3d" class="py-1.5 px-2 rounded-lg border text-[11px] font-semibold transition">Lật 3D</button>
+                        <button onclick="setFlipAnimation('slide')" id="animBtn-slide" class="py-1.5 px-2 rounded-lg border text-[11px] font-semibold transition">Trượt Kindle</button>
+                        <button onclick="setFlipAnimation('fade')" id="animBtn-fade" class="py-1.5 px-2 rounded-lg border text-[11px] font-semibold transition">E-Ink Mờ</button>
                     </div>
                 </div>
             </div>
@@ -1202,20 +671,63 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
             <div class="p-3 rounded-2xl border flex items-center justify-between gap-3" style="background-color: var(--bg-primary); border-color: var(--border-color);">
                 <div>
                     <div class="text-xs font-bold">Sửa lỗi tách chữ Tiếng Việt</div>
-                    <div class="text-[10px] opacity-70">Tự động ghép các chữ bị đứt dấu thành từ chuẩn ("s ố" -&gt; "số")</div>
+                    <div class="text-[10px] opacity-70">Tự động ghép các chữ bị đứt dấu thành từ chuẩn ("s ố" -> "số")</div>
                 </div>
-                <button id="btnToggleVnFix" onclick="toggleVietnameseFix()" class="px-3 py-1.5 rounded-xl font-bold text-xs transition shrink-0" style="background-color: var(--accent-color); color: #FFF;">ĐANG BẬT</button>
+                <button id="btnToggleVnFix" onclick="toggleVietnameseFix()" class="px-3 py-1.5 rounded-xl font-bold text-xs transition shrink-0" style="background-color: var(--accent-color); color: #FFF;">
+                    ĐANG BẬT
+                </button>
+            </div>
+
+            <!-- Bionic Reading (Đọc tập trung siêu tốc) -->
+            <div class="p-3 rounded-2xl border flex items-center justify-between gap-3" style="background-color: var(--bg-primary); border-color: var(--border-color);">
+                <div>
+                    <div class="text-xs font-bold flex items-center gap-1.5">
+                        <i class="ph-fill ph-lightning text-amber-500"></i>
+                        <span>Đọc tập trung (Bionic Reading)</span>
+                    </div>
+                    <div class="text-[10px] opacity-70">Làm đậm các chữ cái đầu giúp mắt lướt nhanh gấp đôi</div>
+                </div>
+                <button id="btnToggleBionic" onclick="toggleBionicReading()" class="px-3 py-1.5 rounded-xl font-bold text-xs transition shrink-0" style="background-color: var(--bg-secondary); color: var(--text-primary);">
+                    TẮT
+                </button>
+            </div>
+
+            <!-- Ánh sáng ấm Warm Light -->
+            <div class="p-3 rounded-2xl border space-y-2" style="background-color: var(--bg-primary); border-color: var(--border-color);">
+                <div class="flex justify-between text-xs font-semibold">
+                    <span class="flex items-center gap-1.5">
+                        <i class="ph-fill ph-sun-horizon text-amber-500"></i>
+                        <span>Ánh sáng ấm chống mỏi mắt</span>
+                    </span>
+                    <span id="warmLightValLabel" class="font-mono">0%</span>
+                </div>
+                <input id="warmLightRange" type="range" min="0" max="45" value="0" oninput="setWarmLight(this.value)" class="w-full">
+            </div>
+
+            <!-- Tự động lật trang (Auto-Flip Interval) -->
+            <div class="p-3 rounded-2xl border space-y-2" style="background-color: var(--bg-primary); border-color: var(--border-color);">
+                <div class="flex justify-between text-xs font-semibold">
+                    <span class="flex items-center gap-1.5">
+                        <i class="ph-fill ph-timer text-blue-500"></i>
+                        <span>Tốc độ tự lật trang (Giây/trang)</span>
+                    </span>
+                    <span id="autoFlipIntervalLabel" class="font-mono">8 giây</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <input id="autoFlipIntervalRange" type="range" min="3" max="30" step="1" value="8" oninput="setAutoFlipInterval(this.value)" class="flex-1">
+                    <button id="btnAutoFlipSheet" onclick="toggleAutoFlip()" class="px-3 py-1.5 rounded-xl font-bold text-xs bg-emerald-500 text-white shrink-0">BẬT</button>
+                </div>
             </div>
 
             <!-- Màu nền -->
             <div class="space-y-2">
                 <label class="text-xs font-semibold opacity-70 uppercase tracking-wider">Màu nền trang sách</label>
                 <div class="grid grid-cols-5 gap-2">
-                    <button onclick="setTheme('light')" id="themeBtn-light" class="py-2.5 px-1.5 rounded-2xl border-2 flex flex-col items-center gap-1 transition bg-[#FFFFFF] text-[#1C1C1E] border-transparent" style="border-color: transparent;"><span class="font-serif font-bold text-sm">Aa</span><span class="text-[10px]">Sáng</span></button>
-                    <button onclick="setTheme('kindle')" id="themeBtn-kindle" class="py-2.5 px-1.5 rounded-2xl border-2 flex flex-col items-center gap-1 transition bg-[#F4F1EA] text-[#181818] border-transparent" style="border-color: var(--accent-color);"><span class="font-serif font-bold text-sm">Aa</span><span class="text-[10px] font-bold">Kindle</span></button>
-                    <button onclick="setTheme('sepia')" id="themeBtn-sepia" class="py-2.5 px-1.5 rounded-2xl border-2 flex flex-col items-center gap-1 transition bg-[#F8F1E3] text-[#3C2F23] border-transparent" style="border-color: transparent;"><span class="font-serif font-bold text-sm">Aa</span><span class="text-[10px]">Sepia</span></button>
-                    <button onclick="setTheme('dark')" id="themeBtn-dark" class="py-2.5 px-1.5 rounded-2xl border-2 flex flex-col items-center gap-1 transition bg-[#1C1C1E] text-[#E5E5EA] border-transparent" style="border-color: transparent;"><span class="font-serif font-bold text-sm">Aa</span><span class="text-[10px]">Đêm</span></button>
-                    <button onclick="setTheme('oled')" id="themeBtn-oled" class="py-2.5 px-1.5 rounded-2xl border-2 flex flex-col items-center gap-1 transition bg-[#000000] text-[#D1D1D6] border-transparent" style="border-color: transparent;"><span class="font-serif font-bold text-sm">Aa</span><span class="text-[10px]">OLED</span></button>
+                    <button onclick="setTheme('light')" id="themeBtn-light" class="py-2.5 px-1.5 rounded-2xl border-2 flex flex-col items-center gap-1 transition bg-[#FFFFFF] text-[#1C1C1E] border-transparent"><span class="font-serif font-bold text-sm">Aa</span><span class="text-[10px]">Sáng</span></button>
+                    <button onclick="setTheme('kindle')" id="themeBtn-kindle" class="py-2.5 px-1.5 rounded-2xl border-2 flex flex-col items-center gap-1 transition bg-[#F4F1EA] text-[#181818] border-transparent"><span class="font-serif font-bold text-sm">Aa</span><span class="text-[10px] font-bold">Kindle</span></button>
+                    <button onclick="setTheme('sepia')" id="themeBtn-sepia" class="py-2.5 px-1.5 rounded-2xl border-2 flex flex-col items-center gap-1 transition bg-[#F8F1E3] text-[#3C2F23] border-transparent"><span class="font-serif font-bold text-sm">Aa</span><span class="text-[10px]">Sepia</span></button>
+                    <button onclick="setTheme('dark')" id="themeBtn-dark" class="py-2.5 px-1.5 rounded-2xl border-2 flex flex-col items-center gap-1 transition bg-[#1C1C1E] text-[#E5E5EA] border-transparent"><span class="font-serif font-bold text-sm">Aa</span><span class="text-[10px]">Đêm</span></button>
+                    <button onclick="setTheme('oled')" id="themeBtn-oled" class="py-2.5 px-1.5 rounded-2xl border-2 flex flex-col items-center gap-1 transition bg-[#000000] text-[#D1D1D6] border-transparent"><span class="font-serif font-bold text-sm">Aa</span><span class="text-[10px]">OLED</span></button>
                 </div>
             </div>
 
@@ -1223,10 +735,10 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
             <div class="space-y-2">
                 <label class="text-xs font-semibold opacity-70 uppercase tracking-wider">Phông chữ đọc sách</label>
                 <div class="grid grid-cols-2 gap-2">
-                    <button onclick="setFontFamily('system')" id="fontBtn-system" class="p-2.5 rounded-xl border text-left transition flex items-center justify-between" style="background-color: var(--bg-primary); border-color: var(--border-color);"><div><div class="text-xs font-bold font-system">Hệ thống (SF / Inter)</div><div class="text-[10px] opacity-65">Gọn gàng iOS</div></div></button>
-                    <button onclick="setFontFamily('serif')" id="fontBtn-serif" class="p-2.5 rounded-xl border text-left transition flex items-center justify-between" style="background-color: var(--bg-primary); border-color: var(--accent-color);"><div><div class="text-xs font-bold font-serif">Sách in (Merriweather)</div><div class="text-[10px] opacity-65">Đỡ mỏi mắt</div></div></button>
-                    <button onclick="setFontFamily('sans')" id="fontBtn-sans" class="p-2.5 rounded-xl border text-left transition flex items-center justify-between" style="background-color: var(--bg-primary); border-color: var(--border-color);"><div><div class="text-xs font-bold font-sans">Hiện đại (Roboto)</div><div class="text-[10px] opacity-65">Rõ nét</div></div></button>
-                    <button onclick="setFontFamily('mono')" id="fontBtn-mono" class="p-2.5 rounded-xl border text-left transition flex items-center justify-between" style="background-color: var(--bg-primary); border-color: var(--border-color);"><div><div class="text-xs font-bold font-mono">Chữ đều (Monospace)</div><div class="text-[10px] opacity-65">Kỹ thuật</div></div></button>
+                    <button onclick="setFontFamily('system')" id="fontBtn-system" class="p-2.5 rounded-xl border text-left transition flex items-center justify-between" style="background-color: var(--bg-primary);"><div><div class="text-xs font-bold font-system">Hệ thống (SF / Inter)</div><div class="text-[10px] opacity-65">Gọn gàng iOS</div></div></button>
+                    <button onclick="setFontFamily('serif')" id="fontBtn-serif" class="p-2.5 rounded-xl border text-left transition flex items-center justify-between" style="background-color: var(--bg-primary);"><div><div class="text-xs font-bold font-serif">Sách in (Merriweather)</div><div class="text-[10px] opacity-65">Đỡ mỏi mắt</div></div></button>
+                    <button onclick="setFontFamily('sans')" id="fontBtn-sans" class="p-2.5 rounded-xl border text-left transition flex items-center justify-between" style="background-color: var(--bg-primary);"><div><div class="text-xs font-bold font-sans">Hiện đại (Roboto)</div><div class="text-[10px] opacity-65">Rõ nét</div></div></button>
+                    <button onclick="setFontFamily('mono')" id="fontBtn-mono" class="p-2.5 rounded-xl border text-left transition flex items-center justify-between" style="background-color: var(--bg-primary);"><div><div class="text-xs font-bold font-mono">Chữ đều (Monospace)</div><div class="text-[10px] opacity-65">Kỹ thuật</div></div></button>
                 </div>
             </div>
 
@@ -1254,7 +766,7 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
                         <i class="ph-bold ph-clock-counter-clockwise text-xl"></i>
                     </div>
                     <div>
-                        <h3 class="text-base font-bold leading-tight">Lịch sử &amp; Tiến trình Sách</h3>
+                        <h3 class="text-base font-bold leading-tight">Lịch sử & Tiến trình Sách</h3>
                         <p class="text-[11px] opacity-70">Các cuốn sách bạn từng đọc và vị trí đang dang dở</p>
                     </div>
                 </div>
@@ -1277,10 +789,18 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
     <div id="tocModal" class="hidden fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/50 backdrop-blur-[2px]" onclick="if(event.target===this) closeModal('tocModal')">
         <div class="w-full max-w-lg max-h-[85vh] overflow-y-auto rounded-t-3xl sm:rounded-3xl ios-blur border p-5 pb-safe space-y-4 shadow-2xl" style="border-color: var(--border-color);">
             <div class="flex items-center justify-between border-b pb-3" style="border-color: var(--border-color);">
-                <h3 class="text-base font-bold">Mục lục &amp; Nhập số trang</h3>
+                <h3 class="text-base font-bold">Mục lục & Nhập số trang</h3>
                 <button onclick="closeModal('tocModal')" class="w-8 h-8 rounded-full flex items-center justify-center bg-black/10 dark:bg-white/10">
                     <i class="ph-bold ph-x text-sm"></i>
                 </button>
+            </div>
+
+            <!-- Danh sách Bookmarks đã lưu -->
+            <div id="bookmarksSectionInToc" class="space-y-1.5">
+                <div class="text-xs font-bold uppercase tracking-wider opacity-75">Trang đã đánh dấu (Bookmarks)</div>
+                <div id="bookmarksListContainer" class="flex flex-wrap gap-2">
+                    <span class="text-xs opacity-60">Chưa có trang nào được đánh dấu.</span>
+                </div>
             </div>
 
             <div class="flex items-center gap-2 p-2.5 rounded-2xl border" style="background-color: var(--bg-primary); border-color: var(--border-color);">
@@ -1293,72 +813,668 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
         </div>
     </div>
 
-    <!-- ================= MODAL TẢI & LƯU APP VỀ MÁY (DOWNLOAD MODAL - KHẮC TRỆT ĐỂ LỖI BẤM KHÔNG ĐĂNG) ================= -->
-    <div id="downloadModal" class="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/50 backdrop-blur-[2px]" onclick="if(event.target===this) closeModal('downloadModal')">
-        <div class="w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-t-3xl sm:rounded-3xl ios-blur border p-5 pb-safe space-y-4 shadow-2xl" style="border-color: var(--border-color);">
+    <!-- ================= MODAL DANH SÁCH HIGHLIGHT / TRÍCH DẪN ================= -->
+    <div id="highlightsModal" class="hidden fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/50 backdrop-blur-[2px]" onclick="if(event.target===this) closeModal('highlightsModal')">
+        <div class="w-full max-w-lg max-h-[85vh] overflow-y-auto rounded-t-3xl sm:rounded-3xl ios-blur border p-5 pb-safe space-y-4 shadow-2xl" style="border-color: var(--border-color);">
             <div class="flex items-center justify-between border-b pb-3" style="border-color: var(--border-color);">
-                <div class="flex items-center gap-2.5">
-                    <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 text-white flex items-center justify-center shadow">
-                        <i class="ph-bold ph-download-simple text-xl"></i>
+                <div class="flex items-center gap-2">
+                    <div class="w-9 h-9 rounded-2xl bg-amber-500/15 text-amber-500 flex items-center justify-center">
+                        <i class="ph-bold ph-highlighter text-xl"></i>
                     </div>
                     <div>
-                        <h3 class="text-base font-bold leading-tight">Lưu Ứng Dụng Về iPhone / Máy Tính</h3>
-                        <p class="text-[11px] opacity-70">Lưu file HTML độc lập để đọc sách ngoại tuyến 100%</p>
+                        <h3 class="text-base font-bold leading-tight">Trích dẫn & Đoạn bôi đậm</h3>
+                        <p class="text-[11px] opacity-70">Các câu trích dẫn bạn đã đánh dấu trong sách</p>
                     </div>
                 </div>
-                <button onclick="closeModal('downloadModal')" class="w-8 h-8 rounded-full flex items-center justify-center bg-black/10 dark:bg-white/10">
+                <button onclick="closeModal('highlightsModal')" class="w-8 h-8 rounded-full flex items-center justify-center bg-black/10 dark:bg-white/10">
                     <i class="ph-bold ph-x text-sm"></i>
                 </button>
             </div>
 
-            <div class="p-4 rounded-2xl border-2 space-y-3" style="background-color: var(--bg-primary); border-color: var(--accent-color);">
-                <div class="flex items-center justify-between">
-                    <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-blue-500/15 text-blue-600 dark:text-blue-400">
-                        Cách 1 • Tải file trực tiếp 1 chạm
-                    </span>
-                </div>
-                <p class="text-xs leading-relaxed">
-                    Bấm vào nút bên dưới để tải file ứng dụng <code>iBookPDF-Kindle.html</code> về thiết bị của bạn:
-                </p>
-                <button onclick="triggerDirectHtmlDownload()" class="w-full py-3.5 px-4 rounded-2xl font-bold text-sm text-white shadow-md flex items-center justify-center gap-2 active:scale-[0.98] transition" style="background-color: var(--accent-color);">
-                    <i class="ph-bold ph-download-simple text-lg"></i>
-                    <span>Tải xuống file iBookPDF-Kindle.html ngay</span>
-                </button>
-                <div class="text-[11px] opacity-75 leading-normal bg-black/5 dark:bg-white/5 p-2.5 rounded-xl">
-                    💡 <strong>Trên iPhone:</strong> Sau khi tải xong, mở ứng dụng <strong>Tệp (Files)</strong> → vào mục <strong>Tải về (Downloads)</strong> → chạm vào file để mở đọc sách bất kỳ lúc nào!
-                </div>
+            <div id="highlightsListContainer" class="space-y-2.5 max-h-96 overflow-y-auto">
+                <!-- Danh sách highlight -->
             </div>
 
-            <div class="p-4 rounded-2xl border space-y-3" style="background-color: var(--bg-primary); border-color: var(--border-color);">
-                <div class="flex items-center justify-between">
-                    <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-amber-500/15 text-amber-600 dark:text-amber-400">
-                        Cách 2 • Sao chép mã nguồn phòng hờ
-                    </span>
-                </div>
-                <p class="text-xs leading-relaxed opacity-85">
-                    Nếu trình duyệt chặn tải xuống tự động, bạn có thể sao chép toàn bộ mã nguồn để dán vào tệp HTML của mình:
-                </p>
-                <button onclick="copyFullAppSourceCode()" id="btnCopyFullHtml" class="w-full py-3 px-3.5 rounded-xl font-bold text-xs border flex items-center justify-center gap-2 active:scale-95 transition" style="background-color: var(--bg-secondary); border-color: var(--border-color);">
-                    <i class="ph-bold ph-copy text-base text-amber-500"></i>
-                    <span>Sao chép toàn bộ mã nguồn HTML</span>
-                </button>
-            </div>
-
-            <button onclick="closeModal('downloadModal')" class="w-full py-3 rounded-2xl font-semibold text-sm border" style="background-color: var(--bg-secondary); border-color: var(--border-color);">
-                Đóng cửa sổ này
+            <button onclick="closeModal('highlightsModal')" class="w-full py-3 rounded-2xl font-semibold text-sm border" style="background-color: var(--bg-secondary); border-color: var(--border-color);">
+                Đóng
             </button>
         </div>
     </div>
 
-    <!-- Thông báo Toast -->
-    <div id="toastNotification" class="fixed top-16 left-1/2 -translate-x-1/2 z-50 px-4 py-2 rounded-full shadow-lg text-xs font-semibold text-white bg-black/85 backdrop-blur pointer-events-none opacity-0 transition-opacity duration-300">
-        Đã lưu cài đặt
+    <!-- ================= MODAL TRA TỪ NHANH (DICTIONARY LOOKUP) ================= -->
+    <div id="dictionaryModal" class="hidden fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/50 backdrop-blur-[2px]" onclick="if(event.target===this) closeModal('dictionaryModal')">
+        <div class="w-full max-w-lg max-h-[85vh] overflow-y-auto rounded-t-3xl sm:rounded-3xl ios-blur border p-5 pb-safe space-y-3.5 shadow-2xl" style="border-color: var(--border-color);">
+            <div class="flex items-center justify-between border-b pb-2.5" style="border-color: var(--border-color);">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-xl bg-blue-500/15 text-blue-500 flex items-center justify-center">
+                        <i class="ph-bold ph-magnifying-glass text-lg"></i>
+                    </div>
+                    <span id="lookupWordTitle" class="text-base font-bold truncate">Tra từ</span>
+                </div>
+                <button onclick="closeModal('dictionaryModal')" class="w-8 h-8 rounded-full flex items-center justify-center bg-black/10 dark:bg-white/10">
+                    <i class="ph-bold ph-x text-sm"></i>
+                </button>
+            </div>
+
+            <div id="dictionaryContent" class="text-xs leading-relaxed max-h-80 overflow-y-auto space-y-2 opacity-90">
+                Đang tìm kiếm thông tin tra cứu...
+            </div>
+
+            <div class="flex items-center gap-2 pt-2 border-t" style="border-color: var(--border-color);">
+                <a id="btnWikiExternal" href="#" target="_blank" class="flex-1 py-2.5 px-3 rounded-xl border text-center font-semibold text-xs active:scale-95 transition" style="background-color: var(--bg-secondary); border-color: var(--border-color);">
+                    Mở Wikipedia đầy đủ
+                </a>
+                <button onclick="closeModal('dictionaryModal')" class="py-2.5 px-4 rounded-xl font-bold text-xs text-white" style="background-color: var(--accent-color)">Đóng</button>
+            </div>
+        </div>
     </div>
 
-    <!-- ================= LOGIC XỬ LÝ CHÍNH (JAVASCRIPT) ================= -->
+    <!-- ================= MODAL TẢI & LƯU APP VỀ MÁY ================= -->
     <script>
         if (window.pdfjsLib) {
             pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+        }
+
+        // ================= KHỞI TẠO INDEXEDDB LƯU TRỮ SÁCH OFFLINE =================
+        let dbPromise = null;
+        function getDB() {
+            if (!dbPromise) {
+                dbPromise = new Promise((resolve, reject) => {
+                    const req = indexedDB.open('iBookPDF_Storage_v1', 1);
+                    req.onupgradeneeded = (e) => {
+                        const db = e.target.result;
+                        if (!db.objectStoreNames.contains('books')) {
+                            db.createObjectStore('books', { keyPath: 'id' });
+                        }
+                    };
+                    req.onsuccess = () => resolve(req.result);
+                    req.onerror = () => reject(req.error);
+                });
+            }
+            return dbPromise;
+        }
+
+        async function saveBookToDB(id, title, arrayBuffer, totalPages) {
+            try {
+                const db = await getDB();
+                const tx = db.transaction('books', 'readwrite');
+                tx.objectStore('books').put({
+                    id,
+                    title,
+                    arrayBuffer,
+                    totalPages,
+                    savedAt: Date.now()
+                });
+                await new Promise((res, rej) => { tx.oncomplete = res; tx.onerror = rej; });
+                loadBookshelfList();
+            } catch (e) {
+                console.warn('Lỗi lưu sách vào IndexedDB:', e);
+            }
+        }
+
+        async function getBookFromDB(id) {
+            try {
+                const db = await getDB();
+                const tx = db.transaction('books', 'readonly');
+                const req = tx.objectStore('books').get(id);
+                return new Promise(res => { req.onsuccess = () => res(req.result); req.onerror = () => res(null); });
+            } catch (e) { return null; }
+        }
+
+        async function getAllBooksFromDB() {
+            try {
+                const db = await getDB();
+                const tx = db.transaction('books', 'readonly');
+                const req = tx.objectStore('books').getAll();
+                return new Promise(res => { req.onsuccess = () => res(req.result || []); req.onerror = () => res([]); });
+            } catch (e) { return []; }
+        }
+
+        async function deleteBookFromDB(id, event) {
+            if (event) event.stopPropagation();
+            try {
+                const db = await getDB();
+                const tx = db.transaction('books', 'readwrite');
+                tx.objectStore('books').delete(id);
+                localStorage.removeItem(`ibookpdf_pos_${id}`);
+                localStorage.removeItem(`ibookpdf_bookmarks_${id}`);
+                localStorage.removeItem(`ibookpdf_highlights_${id}`);
+                await new Promise(res => { tx.oncomplete = res; });
+                loadBookshelfList();
+                showToast('Đã xóa sách khỏi thư viện máy');
+            } catch (e) {}
+        }
+
+        const appState = {
+            docType: null,          // 'pdf' | 'demo'
+            docTitle: 'iBookPDF',
+            docId: '',
+            pdfDoc: null,
+            totalPages: 1,
+            currentPage: 1,
+            currentSubPage: 0,
+            totalSubPages: 1,
+            subPagesList: [],
+            lastFlipDirection: 'next',
+            immersiveBarsHidden: false,
+            viewMode: 'reflow',     // 'reflow' | 'canvas'
+            pagesReflowData: {},
+            autoCrop: true,
+            canvasFilter: 'none',
+            canvasZoom: 1.0,
+            bookmarks: [],
+            highlights: [],
+            selectedRangeData: null,
+            autoFlipTimer: null,
+            autoFlipInterval: 8,
+            isAutoFlipping: false,
+            settings: {
+                readingLayout: 'flipbook',
+                flipAnimation: 'slide',
+                theme: 'kindle',
+                fontFamily: 'serif',
+                fontSize: 19,
+                lineHeight: 1.75,
+                textAlign: 'justify',
+                pagePadding: 20,
+                fixBrokenVietnamese: true,
+                bionicReading: false,
+                warmLight: 0
+            },
+            tts: {
+                speaking: false,
+                rate: 1.0,
+                currentParagraphIndex: 0,
+                utterance: null
+            }
+        };
+
+        const DEMO_PAGES = [
+            {
+                title: "Chương 1: Tiến trình đọc & Sửa lỗi chữ Tiếng Việt",
+                blocks: [
+                    { type: 'heading', text: "CHƯƠNG 1: QUẢN LÝ TIẾN TRÌNH ĐỌC & TỰ ĐỘNG KHÔI PHỤC CHỮ TIẾNG VIỆT" },
+                    { type: 'paragraph', text: "s ố ng tr ở v ề anh đi tìm nhưng chỉ đượ c bi ế t r ằng dượng đã mấ t t ừ lâu. Còn ngôi nhà n ọ thì không ai nh ớ đã bị san đi từ bao gi ờ. M ột con người như thế đấ y và m ộ t câu chuy ện như thế và còn bao nhiêu chuy ện khác, bao nhiêu ngườ i khác n ữa trong đờ i anh." },
+                    { type: 'paragraph', text: "Ứng dụng tự động ghi nhớ tiến trình (số trang, số màn hình con) của từng cuốn sách riêng biệt vào bộ nhớ máy. Khi bạn mở lại sách cũ, app sẽ khôi phục ngay lập tức tại vị trí bạn đang đọc dở!" },
+                    { type: 'heading', text: "1.1. Bảng lịch sử đọc sách thông minh" },
+                    { type: 'paragraph', text: "Bấm vào biểu tượng đồng hồ đếm ngược trên thanh công cụ phía trên để xem danh sách các cuốn sách bạn từng mở và chuyển nhanh đến cuốn bất kỳ." }
+                ]
+            },
+            {
+                title: "Chương 2: Chế độ Bản gốc & Tự cắt lề trắng",
+                blocks: [
+                    { type: 'heading', text: "CHƯƠNG 2: TỰ ĐỘNG CẮT VIỀN TRẮNG VÀ BẢNG BIỂU" },
+                    { type: 'paragraph', text: "Khi gặp các file PDF chứa sơ đồ, bảng số liệu hoặc bản scan, bạn chỉ cần gạt sang chế độ Bản gốc. Thuật toán quét điểm ảnh sẽ tự động loại bỏ toàn bộ 4 lề trắng thừa của khổ giấy A4 để phóng to nội dung tối đa trên màn hình iPhone." }
+                ]
+            }
+        ];
+
+        window.addEventListener('DOMContentLoaded', () => {
+            loadSavedSettings();
+            applySettingsToDOM();
+            checkSavedReadingSession();
+            loadBookshelfList();
+            updateHistoryBadge();
+            setupSwipeNavigation();
+            setupTextSelectionHandler();
+            setupHardwareKeys();
+
+            window.addEventListener('resize', () => {
+                if (appState.docType && appState.viewMode === 'reflow' && appState.settings.readingLayout === 'flipbook') {
+                    renderCurrentPage();
+                }
+            });
+        });
+
+        // ================= TỦ SÁCH INDEXEDDB & TIẾN TRÌNH =================
+        async function loadBookshelfList() {
+            const listEl = document.getElementById('bookshelfList');
+            const countEl = document.getElementById('savedBooksCount');
+            const books = await getAllBooksFromDB();
+            if (countEl) countEl.textContent = `${books.length} cuốn`;
+
+            if (books.length === 0) {
+                listEl.innerHTML = `<div class="text-[11px] opacity-60 italic py-2 text-center">Chưa có sách nào lưu trong máy. Tải một file PDF lên để tự động lưu!</div>`;
+                return;
+            }
+
+            listEl.innerHTML = '';
+            books.forEach(b => {
+                let savedPos = { currentPage: 1 };
+                try {
+                    const raw = localStorage.getItem(`ibookpdf_pos_${b.id}`);
+                    if (raw) savedPos = JSON.parse(raw);
+                } catch(e){}
+
+                const pct = Math.round((savedPos.currentPage / Math.max(1, b.totalPages)) * 100);
+
+                const div = document.createElement('div');
+                div.className = 'w-full p-2.5 rounded-2xl border flex items-center justify-between gap-2.5 transition active:scale-[0.99] cursor-pointer';
+                div.style.backgroundColor = 'var(--bg-primary)';
+                div.style.borderColor = 'var(--border-color)';
+                div.innerHTML = `
+                    <div class="min-w-0 flex-1">
+                        <div class="text-xs font-bold truncate">${escapeHtml(b.title)}</div>
+                        <div class="text-[10px] opacity-65 flex items-center gap-1.5 mt-0.5">
+                            <span>Trang ${savedPos.currentPage}/${b.totalPages} (${pct}%)</span>
+                            <span>•</span>
+                            <span>Đã lưu offline</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-1">
+                        <button onclick="openBookFromShelf('${b.id}')" class="px-2.5 py-1.5 rounded-xl text-[11px] font-bold text-white shrink-0" style="background-color: var(--accent-color)">Đọc</button>
+                        <button onclick="deleteBookFromDB('${b.id}', event)" class="p-1.5 rounded-xl hover:bg-red-500/10 text-red-500 transition"><i class="ph ph-trash text-base"></i></button>
+                    </div>
+                `;
+                div.onclick = (e) => {
+                    if (e.target.closest('button')) return;
+                    openBookFromShelf(b.id);
+                };
+                listEl.appendChild(div);
+            });
+        }
+
+        async function openBookFromShelf(id) {
+            const b = await getBookFromDB(id);
+            if (!b) return showToast('Không tìm thấy sách trong bộ nhớ máy');
+
+            stopTTS();
+            stopAutoFlip();
+            appState.docType = 'pdf';
+            appState.docTitle = b.title;
+            appState.docId = b.id;
+            appState.totalPages = b.totalPages;
+            appState.pagesReflowData = {};
+
+            enterReaderUI();
+            showLoading(true, 'Đang mở lại sách từ bộ nhớ máy...', 25);
+
+            try {
+                const loadingTask = pdfjsLib.getDocument({ data: b.arrayBuffer });
+                appState.pdfDoc = await loadingTask.promise;
+                appState.totalPages = appState.pdfDoc.numPages;
+
+                loadDocBookmarksAndHighlights();
+
+                const savedPos = localStorage.getItem(`ibookpdf_pos_${appState.docId}`);
+                if (savedPos) {
+                    try {
+                        const parsed = JSON.parse(savedPos);
+                        appState.currentPage = Math.min(appState.totalPages, Math.max(1, parsed.currentPage || 1));
+                        appState.currentSubPage = parsed.currentSubPage || 0;
+                    } catch(e) { appState.currentPage = 1; }
+                } else {
+                    appState.currentPage = 1;
+                }
+
+                await ensurePageReflowed(appState.currentPage);
+                showLoading(false);
+                renderCurrentPage();
+                buildTableOfContents();
+                showToast(`Đã mở "${appState.docTitle}"`);
+                backgroundExtractAllPages();
+            } catch(e) {
+                showLoading(false);
+                showToast('Lỗi khi mở lại sách');
+            }
+        }
+
+        function loadDocBookmarksAndHighlights() {
+            try {
+                const bRaw = localStorage.getItem(`ibookpdf_bookmarks_${appState.docId}`);
+                appState.bookmarks = bRaw ? JSON.parse(bRaw) : [];
+                const hRaw = localStorage.getItem(`ibookpdf_highlights_${appState.docId}`);
+                appState.highlights = hRaw ? JSON.parse(hRaw) : [];
+            } catch(e) {
+                appState.bookmarks = [];
+                appState.highlights = [];
+            }
+            updateBookmarkTopIcon();
+        }
+
+        function saveDocBookmarksAndHighlights() {
+            if (!appState.docId) return;
+            try {
+                localStorage.setItem(`ibookpdf_bookmarks_${appState.docId}`, JSON.stringify(appState.bookmarks));
+                localStorage.setItem(`ibookpdf_highlights_${appState.docId}`, JSON.stringify(appState.highlights));
+            } catch(e){}
+        }
+
+        function toggleCurrentBookmark() {
+            const page = appState.currentPage;
+            const idx = appState.bookmarks.indexOf(page);
+            if (idx >= 0) {
+                appState.bookmarks.splice(idx, 1);
+                showToast(`Đã bỏ đánh dấu Trang ${page}`);
+            } else {
+                appState.bookmarks.push(page);
+                appState.bookmarks.sort((a,b) => a - b);
+                showToast(`Đã đánh dấu Trang ${page}`);
+            }
+            saveDocBookmarksAndHighlights();
+            updateBookmarkTopIcon();
+            buildBookmarksListInToc();
+        }
+
+        function updateBookmarkTopIcon() {
+            const icon = document.getElementById('iconBookmarkTop');
+            const isBookmarked = appState.bookmarks.includes(appState.currentPage);
+            if (icon) {
+                icon.className = isBookmarked ? 'ph-fill ph-bookmark-simple text-xl text-amber-500' : 'ph ph-bookmark-simple text-xl';
+            }
+        }
+
+        function buildBookmarksListInToc() {
+            const container = document.getElementById('bookmarksListContainer');
+            if (!container) return;
+            if (appState.bookmarks.length === 0) {
+                container.innerHTML = `<span class="text-xs opacity-60">Chưa có trang nào được đánh dấu.</span>`;
+                return;
+            }
+            container.innerHTML = '';
+            appState.bookmarks.forEach(p => {
+                const b = document.createElement('button');
+                b.className = 'px-3 py-1.5 rounded-xl border text-xs font-bold flex items-center gap-1 active:scale-95 transition';
+                b.style.backgroundColor = (p === appState.currentPage) ? 'var(--bg-secondary)' : 'var(--bg-primary)';
+                b.style.borderColor = (p === appState.currentPage) ? 'var(--accent-color)' : 'var(--border-color)';
+                b.innerHTML = `<i class="ph-fill ph-bookmark-simple text-amber-500"></i> Trang ${p}`;
+                b.onclick = () => { closeModal('tocModal'); goToPage(p); };
+                container.appendChild(b);
+            });
+        }
+
+        // ================= HIGHLIGHT & TRA TỪ ĐIỂN NHANH =================
+        function setupTextSelectionHandler() {
+            const popup = document.getElementById('selectionPopup');
+            document.addEventListener('selectionchange', () => {
+                const sel = window.getSelection();
+                if (!sel || sel.isCollapsed || !sel.toString().trim()) {
+                    popup.classList.add('hidden');
+                    return;
+                }
+                const text = sel.toString().trim();
+                if (text.length < 2) { popup.classList.add('hidden'); return; }
+
+                const range = sel.getRangeAt(0);
+                const rect = range.getBoundingClientRect();
+                if (rect.width === 0 || rect.height === 0) return;
+
+                appState.selectedRangeData = { text, page: appState.currentPage };
+
+                popup.style.top = `${Math.max(10, rect.top - 48)}px`;
+                popup.style.left = `${Math.max(10, Math.min(window.innerWidth - 220, rect.left + (rect.width / 2) - 100))}px`;
+                popup.classList.remove('hidden');
+            });
+        }
+
+        function applyHighlight(color) {
+            if (!appState.selectedRangeData) return;
+            const hl = {
+                id: 'hl_' + Date.now(),
+                text: appState.selectedRangeData.text,
+                page: appState.currentPage,
+                color: color || 'yellow',
+                createdAt: Date.now()
+            };
+            appState.highlights.push(hl);
+            saveDocBookmarksAndHighlights();
+            document.getElementById('selectionPopup').classList.add('hidden');
+            window.getSelection().removeAllRanges();
+            renderActiveSubPage();
+            showToast('Đã lưu đoạn bôi đậm vào trích dẫn!');
+        }
+
+        function openHighlightsModal() {
+            const container = document.getElementById('highlightsListContainer');
+            if (appState.highlights.length === 0) {
+                container.innerHTML = `<div class="text-xs text-center py-6 opacity-70">Chưa có đoạn bôi đậm hoặc trích dẫn nào.</div>`;
+                return;
+            }
+            container.innerHTML = '';
+            appState.highlights.forEach((h, idx) => {
+                const item = document.createElement('div');
+                item.className = 'p-3 rounded-2xl border text-left space-y-1.5';
+                item.style.backgroundColor = 'var(--bg-primary)';
+                item.style.borderColor = 'var(--border-color)';
+                item.innerHTML = `
+                    <div class="flex items-center justify-between text-[11px] opacity-70">
+                        <span class="font-bold flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full inline-block hl-${h.color}"></span> Trang ${h.page}</span>
+                        <button onclick="removeHighlight('${h.id}')" class="text-red-500 hover:opacity-80"><i class="ph ph-trash"></i> Xóa</button>
+                    </div>
+                    <div class="text-xs leading-relaxed hl-${h.color} font-medium">"${escapeHtml(h.text)}"</div>
+                    <button onclick="closeModal('highlightsModal'); goToPage(${h.page})" class="text-[11px] font-semibold underline" style="color: var(--accent-color)">Nhảy đến trang này</button>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        function removeHighlight(id) {
+            appState.highlights = appState.highlights.filter(h => h.id !== id);
+            saveDocBookmarksAndHighlights();
+            openHighlightsModal();
+            renderActiveSubPage();
+            showToast('Đã xóa trích dẫn');
+        }
+
+        async function lookupSelectedWord() {
+            if (!appState.selectedRangeData) return;
+            const word = appState.selectedRangeData.text.replace(/[.,;!?()]/g, '').trim();
+            document.getElementById('selectionPopup').classList.add('hidden');
+            window.getSelection().removeAllRanges();
+
+            document.getElementById('lookupWordTitle').textContent = `Tra cứu: "${word}"`;
+            const content = document.getElementById('dictionaryContent');
+            content.innerHTML = `<div class="py-4 text-center opacity-70"><i class="ph-bold ph-spinner animate-spin text-xl"></i> Đang tìm kiếm từ điển Wikipedia...</div>`;
+            document.getElementById('btnWikiExternal').href = `https://vi.wikipedia.org/wiki/${encodeURIComponent(word)}`;
+            openModal('dictionaryModal');
+
+            try {
+                const res = await fetch(`https://vi.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(word)}`);
+                if (!res.ok) throw new Error('Không tìm thấy');
+                const data = await res.json();
+                if (data.extract) {
+                    content.innerHTML = `
+                        <div class="font-bold text-sm mb-1">${escapeHtml(data.title)}</div>
+                        <div class="opacity-85 text-xs leading-relaxed">${escapeHtml(data.extract)}</div>
+                    `;
+                } else {
+                    content.innerHTML = `Không tìm thấy giải nghĩa tức thì cho "${escapeHtml(word)}". Bấm vào nút bên dưới để tìm trực tiếp trên Wikipedia web.`;
+                }
+            } catch(e) {
+                content.innerHTML = `Không tìm thấy định nghĩa Wikipedia nhanh. Bạn có thể mở liên kết web bên dưới.`;
+            }
+        }
+
+        // ================= TỰ ĐỘNG LẬT TRANG (AUTO-FLIP) =================
+        function toggleAutoFlip() {
+            appState.isAutoFlipping = !appState.isAutoFlipping;
+            const dot = document.getElementById('autoFlipDot');
+            const icon = document.getElementById('iconAutoFlipTop');
+            const btnSheet = document.getElementById('btnAutoFlipSheet');
+
+            if (appState.isAutoFlipping) {
+                if (dot) dot.classList.remove('hidden');
+                if (icon) icon.className = 'ph-fill ph-pause-circle text-xl text-emerald-500';
+                if (btnSheet) { btnSheet.textContent = 'DỪNG'; btnSheet.className = 'px-3 py-1.5 rounded-xl font-bold text-xs bg-red-500 text-white shrink-0'; }
+                showToast(`Đã bật tự lật trang (${appState.autoFlipInterval}s/trang)`);
+                startAutoFlipLoop();
+            } else {
+                stopAutoFlip();
+                showToast('Đã dừng tự lật trang');
+            }
+        }
+
+        function startAutoFlipLoop() {
+            if (appState.autoFlipTimer) clearInterval(appState.autoFlipTimer);
+            appState.autoFlipTimer = setInterval(() => {
+                if (!appState.isAutoFlipping) return;
+                turnStep(1);
+            }, appState.autoFlipInterval * 1000);
+        }
+
+        function stopAutoFlip() {
+            if (appState.autoFlipTimer) clearInterval(appState.autoFlipTimer);
+            appState.autoFlipTimer = null;
+            appState.isAutoFlipping = false;
+            const dot = document.getElementById('autoFlipDot');
+            const icon = document.getElementById('iconAutoFlipTop');
+            const btnSheet = document.getElementById('btnAutoFlipSheet');
+            if (dot) dot.classList.add('hidden');
+            if (icon) icon.className = 'ph ph-play-circle text-xl';
+            if (btnSheet) { btnSheet.textContent = 'BẬT'; btnSheet.className = 'px-3 py-1.5 rounded-xl font-bold text-xs bg-emerald-500 text-white shrink-0'; }
+        }
+
+        function setAutoFlipInterval(val) {
+            appState.autoFlipInterval = parseInt(val) || 8;
+            document.getElementById('autoFlipIntervalLabel').textContent = `${appState.autoFlipInterval} giây`;
+            if (appState.isAutoFlipping) startAutoFlipLoop();
+        }
+
+        // ================= BIONIC READING & WARM LIGHT =================
+        function toggleBionicReading() {
+            appState.settings.bionicReading = !appState.settings.bionicReading;
+            const btn = document.getElementById('btnToggleBionic');
+            if (btn) {
+                btn.textContent = appState.settings.bionicReading ? 'ĐANG BẬT' : 'TẮT';
+                btn.style.backgroundColor = appState.settings.bionicReading ? 'var(--accent-color)' : 'var(--bg-secondary)';
+                btn.style.color = appState.settings.bionicReading ? '#FFFFFF' : 'var(--text-primary)';
+            }
+            saveSettings();
+            renderActiveSubPage();
+            showToast(appState.settings.bionicReading ? 'Đã bật Đọc tập trung Bionic' : 'Đã tắt Đọc tập trung Bionic');
+        }
+
+        function formatBionicText(text) {
+            if (!appState.settings.bionicReading) return escapeHtml(text);
+            return text.split(/\s+/).map(word => {
+                if (word.length <= 1) return escapeHtml(word);
+                const mid = Math.ceil(word.length / 2);
+                const lead = word.slice(0, mid);
+                const rest = word.slice(mid);
+                return `<b class="bionic-lead">${escapeHtml(lead)}</b>${escapeHtml(rest)}`;
+            }).join(' ');
+        }
+
+        function setWarmLight(val) {
+            const num = parseInt(val) || 0;
+            appState.settings.warmLight = num;
+            document.getElementById('warmLightValLabel').textContent = `${num}%`;
+            document.getElementById('warmLightOverlay').style.backgroundColor = `rgba(255, 147, 41, ${num / 100})`;
+            saveSettings();
+        }
+
+        // ================= PHÍM CỨNG ĐIỀU HƯỚNG =================
+        function setupHardwareKeys() {
+            window.addEventListener('keydown', (e) => {
+                if (['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) return;
+                if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') {
+                    e.preventDefault();
+                    turnStep(1);
+                } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+                    e.preventDefault();
+                    turnStep(-1);
+                }
+            });
+        }
+
+        // ================= CẢI TIẾN FILE SELECT ĐỂ LƯU VÀO INDEXEDDB =================
+        async function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            stopTTS();
+            stopAutoFlip();
+            appState.docType = 'pdf';
+            appState.docTitle = file.name.replace(/\.pdf$/i, '');
+            appState.docId = `${file.name}_${file.size}`;
+            appState.pagesReflowData = {};
+
+            enterReaderUI();
+            showLoading(true, 'Đang đọc và lưu sách vào bộ nhớ máy...', 15);
+
+            try {
+                const arrayBuffer = await file.arrayBuffer();
+                const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
+                appState.pdfDoc = await loadingTask.promise;
+                appState.totalPages = appState.pdfDoc.numPages;
+
+                // Tự động lưu sách vào IndexedDB để mở lại không cần tải lại file
+                saveBookToDB(appState.docId, appState.docTitle, arrayBuffer, appState.totalPages);
+                loadDocBookmarksAndHighlights();
+
+                const savedPos = localStorage.getItem(`ibookpdf_pos_${appState.docId}`);
+                if (savedPos) {
+                    try {
+                        const parsed = JSON.parse(savedPos);
+                        appState.currentPage = Math.min(appState.totalPages, Math.max(1, parsed.currentPage || 1));
+                        appState.currentSubPage = parsed.currentSubPage || 0;
+                    } catch (e) {
+                        appState.currentPage = 1;
+                    }
+                } else {
+                    appState.currentPage = 1;
+                }
+
+                showLoading(true, `Đang đồng dạng chữ trang ${appState.currentPage}/${appState.totalPages}...`, 55);
+                await ensurePageReflowed(appState.currentPage);
+
+                showLoading(false);
+                renderCurrentPage();
+                buildTableOfContents();
+                showToast(`Đã lưu "${appState.docTitle}" vào thư viện iPhone!`);
+
+                backgroundExtractAllPages();
+            } catch (error) {
+                console.error('Lỗi đọc file PDF:', error);
+                showLoading(false);
+                showToast('Không thể đọc file PDF này. Vui lòng thử file khác.');
+                showWelcomeScreen();
+            }
+        }
+
+        // ================= CẬP NHẬT RENDER VĂN BẢN VỚI HIGHLIGHT & BIONIC =================
+        function renderActiveSubPage(highlightKeyword = '') {
+            const container = document.getElementById('reflowViewport');
+            container.innerHTML = '';
+            const units = appState.subPagesList[appState.currentSubPage] || [];
+
+            units.forEach((unit, idx) => {
+                const el = document.createElement(unit.type === 'heading' ? 'h2' : 'p');
+                el.className = unit.type === 'heading' ? 'reflow-heading' : 'reflow-paragraph cursor-pointer';
+                el.dataset.paraIndex = unit.paraIndex !== undefined ? unit.paraIndex : idx;
+
+                let renderedHtml = formatBionicText(unit.text);
+
+                // Áp dụng các highlight đã lưu của trang hiện tại
+                appState.highlights.filter(h => h.page === appState.currentPage).forEach(h => {
+                    const safe = escapeHtml(h.text);
+                    if (renderedHtml.includes(safe)) {
+                        renderedHtml = renderedHtml.replace(safe, `<mark class="hl-${h.color}">${safe}</mark>`);
+                    }
+                });
+
+                if (highlightKeyword && highlightKeyword.trim()) {
+                    const safeKw = highlightKeyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                    renderedHtml = renderedHtml.replace(new RegExp(`(${safeKw})`, 'gi'), '<mark class="search-highlight">$1</mark>');
+                }
+
+                el.innerHTML = renderedHtml;
+
+                el.addEventListener('click', (e) => {
+                    if (window.getSelection().toString().trim().length > 0) return;
+                    if (!document.getElementById('ttsBar').classList.contains('hidden')) {
+                        startTTSFromIndex(unit.paraIndex !== undefined ? unit.paraIndex : idx);
+                    }
+                });
+                container.appendChild(el);
+            });
+
+            if (appState.lastFlipDirection !== 'none') {
+                triggerFlipAnimation(appState.lastFlipDirection);
+                appState.lastFlipDirection = 'none';
+            }
+            updatePaginationIndicators();
+            updateBookmarkTopIcon();
         }
 
         const appState = {
@@ -1571,6 +1687,19 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
         function applySettingsToDOM() {
             const s = appState.settings;
             document.documentElement.setAttribute('data-theme', s.theme);
+
+            // Đồng bộ dynamic theme-color cho status bar / Dynamic Island trên Safari iOS
+            const themeHexMap = {
+                light: '#FFFFFF',
+                kindle: '#F4F1EA',
+                sepia: '#F8F1E3',
+                dark: '#1C1C1E',
+                oled: '#000000'
+            };
+            const themeColorMeta = document.getElementById('metaThemeColor');
+            if (themeColorMeta) {
+                themeColorMeta.setAttribute('content', themeHexMap[s.theme] || '#000000');
+            }
 
             const fontMap = {
                 system: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif',
@@ -2319,32 +2448,76 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
 
         function toggleImmersiveReaderBars() {
             appState.immersiveBarsHidden = !appState.immersiveBarsHidden;
-            document.getElementById('topBar').style.transform = appState.immersiveBarsHidden ? 'translateY(-105%)' : 'translateY(0)';
-            document.getElementById('bottomBar').style.transform = appState.immersiveBarsHidden ? 'translateY(105%)' : 'translateY(0)';
+            const topBar = document.getElementById('topBar');
+            const bottomBar = document.getElementById('bottomBar');
+            const floatBtn = document.getElementById('floatingShowBarsBtn');
+            const iconFullscreen = document.getElementById('iconToggleFullscreen');
+
+            if (appState.immersiveBarsHidden) {
+                topBar.style.transform = 'translateY(-110%)';
+                bottomBar.style.transform = 'translateY(110%)';
+                if (floatBtn) {
+                    floatBtn.classList.remove('hidden');
+                    floatBtn.classList.add('flex');
+                }
+                if (iconFullscreen) iconFullscreen.className = 'ph-bold ph-arrows-in-simple text-lg';
+            } else {
+                topBar.style.transform = 'translateY(0)';
+                bottomBar.style.transform = 'translateY(0)';
+                if (floatBtn) {
+                    floatBtn.classList.add('hidden');
+                    floatBtn.classList.remove('flex');
+                }
+                if (iconFullscreen) iconFullscreen.className = 'ph-bold ph-arrows-out-simple text-lg';
+            }
         }
 
         function setupSwipeNavigation() {
-            let startX = 0, startY = 0;
+            let startX = 0, startY = 0, startTime = 0;
             const stage = document.getElementById('flipbookStage');
+            if (!stage) return;
+
             stage.addEventListener('touchstart', e => {
                 if (e.touches.length !== 1) return;
                 startX = e.changedTouches[0].clientX;
                 startY = e.changedTouches[0].clientY;
+                startTime = Date.now();
             }, { passive: true });
 
             stage.addEventListener('touchend', e => {
-                const dx = e.changedTouches[0].clientX - startX;
-                const dy = e.changedTouches[0].clientY - startY;
-                if (Math.abs(dx) > 48 && Math.abs(dx) > Math.abs(dy) * 1.6) {
+                if (e.changedTouches.length !== 1) return;
+                const endX = e.changedTouches[0].clientX;
+                const endY = e.changedTouches[0].clientY;
+                const dx = endX - startX;
+                const dy = endY - startY;
+                const duration = Date.now() - startTime;
+
+                // 1. Nhận diện cử chỉ vuốt lướt trang ngang
+                if (Math.abs(dx) > 42 && Math.abs(dx) > Math.abs(dy) * 1.5) {
                     if (dx < 0) turnStep(1); else turnStep(-1);
                     return;
                 }
-                if (appState.settings.readingLayout === 'flipbook' && Math.abs(dx) < 12 && Math.abs(dy) < 12) {
+
+                // 2. Nhận diện chạm tĩnh (Tap) nhanh (< 350ms, độ dịch chuyển nhỏ < 16px)
+                if (Math.abs(dx) < 16 && Math.abs(dy) < 16 && duration < 350) {
                     if (window.getSelection().toString().trim().length > 0) return;
-                    const w = window.innerWidth, x = e.changedTouches[0].clientX;
-                    if (x > w * 0.72) turnStep(1);
-                    else if (x < w * 0.26) turnStep(-1);
-                    else toggleImmersiveReaderBars();
+                    const w = window.innerWidth;
+                    if (w <= 0) return;
+
+                    if (appState.settings.readingLayout === 'flipbook') {
+                        if (endX > w * 0.72) {
+                            turnStep(1);
+                        } else if (endX < w * 0.28) {
+                            turnStep(-1);
+                        } else {
+                            toggleImmersiveReaderBars();
+                        }
+                    } else {
+                        // Chế độ cuộn dọc: Chạm vào giữa màn hình để ẩn/hiện thanh công cụ
+                        if (endX >= w * 0.25 && endX <= w * 0.75) {
+                            toggleImmersiveReaderBars();
+                        }
+                    }
                 }
             }, { passive: true });
         }
@@ -2518,5 +2691,5 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
             });
         }
     </script>
-
-</body></html>
+</body>
+</html>
